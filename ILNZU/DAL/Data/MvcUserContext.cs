@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using ILNZU.Models;
+using DAL.Models;
 
-namespace ILNZU.Data
+namespace DAL.Data
 {
     public class MvcUserContext : DbContext
     {

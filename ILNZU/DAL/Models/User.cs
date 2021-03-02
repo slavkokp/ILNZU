@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
-namespace ILNZU.Models
+namespace DAL.Models
 {
     public class User
     {
