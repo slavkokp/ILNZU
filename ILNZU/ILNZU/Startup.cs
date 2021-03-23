@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DAL.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 
 namespace ILNZU
@@ -30,6 +31,13 @@ namespace ILNZU
 
             services.AddDbContext<MvcUserContext>(options =>
             options.UseNpgsql(Configuration.GetConnectionString("MvcUserContext")));
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => //CookieAuthenticationOptions
+                {
+                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                });
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,7 +57,7 @@ namespace ILNZU
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
