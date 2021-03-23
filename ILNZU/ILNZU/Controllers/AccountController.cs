@@ -8,6 +8,8 @@ using DAL.Models;
 using DAL.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ILNZU.Controllers
 {
@@ -31,12 +33,17 @@ namespace ILNZU.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = await db.User.FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
+                User user = await db.User.FirstOrDefaultAsync(u => u.Email == model.Email);
                 if (user != null)
                 {
-                    await Authenticate(model.Email); 
+                    string hash = hashPassword(model.Password + user.Salt);
+                    User ExistingUser = await db.User.FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == hash);
+                    if (ExistingUser != null)
+                    {
+                        await Authenticate(model.Email);
 
-                    return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
                 ModelState.AddModelError("", "Wrong login or password");
             }
@@ -49,6 +56,29 @@ namespace ILNZU.Controllers
             return View();
         }
 
+        private static string hashPassword(string password)
+        {
+            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(password));
+            byte[] result = md5.Hash;
+            StringBuilder str = new StringBuilder();
+            for (int i = 1; i < result.Length; i++)
+            {
+                str.Append(result[i].ToString("x2"));
+            }
+            return str.ToString();
+        }
+
+        private static string GetSalt()
+        {
+            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+            byte[] buffer = new byte[1024];
+
+            rng.GetBytes(buffer);
+            string salt = System.BitConverter.ToString(buffer);
+            return salt;
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
@@ -58,7 +88,11 @@ namespace ILNZU.Controllers
                 User user = await db.User.FirstOrDefaultAsync(u => u.Email == model.Email);
                 if (user == null)
                 {
-                    db.User.Add(new User { Email = model.Email, Password = model.Password, Name = model.Name, ProfilePictureId = 0, Surname = model.Surname, Username = model.Username });
+                    string salt = GetSalt();
+                    string hash = hashPassword(model.Password + salt);
+
+
+                    db.User.Add(new User { Email = model.Email, Password = hash, Name = model.Name, ProfilePictureId = 0, Surname = model.Surname, Username = model.Username, Salt = salt });
                     await db.SaveChangesAsync();
 
                     await Authenticate(model.Email);
