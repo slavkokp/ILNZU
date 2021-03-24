@@ -88,15 +88,12 @@ namespace ILNZU.Controllers
                 User user = await db.User.FirstOrDefaultAsync(u => u.Email == model.Email);
                 if (user == null)
                 {
-<<<<<<< HEAD
                     string salt = GetSalt();
                     string hash = hashPassword(model.Password + salt);
 
 
                     db.User.Add(new User { Email = model.Email, Password = hash, Name = model.Name, ProfilePictureId = 0, Surname = model.Surname, Username = model.Username, Salt = salt });
-=======
-                    db.User.Add(new User { Email = model.Email, Password = model.Password, Name = model.Name, ProfilePicture = 0, Surname = model.Surname, Username = model.Username });
->>>>>>> 32a20abeb170900bf21f9c14ca8ed387c215fc05
+
                     await db.SaveChangesAsync();
 
                     await Authenticate(model.Email);
