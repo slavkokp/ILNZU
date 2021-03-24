@@ -9,9 +9,12 @@ namespace ILNZU.ViewModels
     public class RegisterModel
     {
         [Required(ErrorMessage = "Email not set")]
+        [DataType(DataType.EmailAddress)]
+        [EmailAddress]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Password not set")]
+        [MinLength(3, ErrorMessage = "The password must contain at least 3 symbols")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 

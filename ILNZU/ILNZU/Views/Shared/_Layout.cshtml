@@ -24,17 +24,19 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <form asp-action="Logout" asp-controller="Account">
-                                <div>
-                                    <input type="submit" value="Logout" class="btn btn-outline-dark" />
-                                </div>
-                            </form>
-                        </li>
                     </ul>
                 </div>
             </div>
+            <div>
+                @User.Identity.Name
+            </div>
+            <form asp-action="Logout" asp-controller="Account">
+                <div>
+                    <input type="submit" value="Logout" class="btn btn-outline-dark" />
+                </div>
+            </form>
         </nav>
+        
     </header>
     <div class="container">
         <main role="main" class="pb-3">
