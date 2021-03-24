@@ -9,8 +9,6 @@ namespace TEEEEEsts
         [Fact]
         public void Test1()
         {
-            DbContext db;
-            db.
         }
     }
 }

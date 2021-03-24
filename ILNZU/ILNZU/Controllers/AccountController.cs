@@ -72,7 +72,7 @@ namespace ILNZU.Controllers
         private static string GetSalt()
         {
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[16];
 
             rng.GetBytes(buffer);
             string salt = System.BitConverter.ToString(buffer);
