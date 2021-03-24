@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Cryptography;
 using System.Text;
+using DAL;
 
 namespace ILNZU.Controllers
 {
@@ -36,7 +37,7 @@ namespace ILNZU.Controllers
                 User user = await db.User.FirstOrDefaultAsync(u => u.Email == model.Email);
                 if (user != null)
                 {
-                    string hash = hashPassword(model.Password + user.Salt);
+                    string hash = PasswordHash.hashPassword(model.Password + user.Salt);
                     User ExistingUser = await db.User.FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == hash);
                     if (ExistingUser != null)
                     {
@@ -56,28 +57,6 @@ namespace ILNZU.Controllers
             return View();
         }
 
-        private static string hashPassword(string password)
-        {
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-            md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(password));
-            byte[] result = md5.Hash;
-            StringBuilder str = new StringBuilder();
-            for (int i = 1; i < result.Length; i++)
-            {
-                str.Append(result[i].ToString("x2"));
-            }
-            return str.ToString();
-        }
-
-        private static string GetSalt()
-        {
-            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-            byte[] buffer = new byte[16];
-
-            rng.GetBytes(buffer);
-            string salt = System.BitConverter.ToString(buffer);
-            return salt;
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -87,8 +66,8 @@ namespace ILNZU.Controllers
             {   
                 try
                 {
-                    string salt = GetSalt();
-                    string hash = hashPassword(model.Password + salt);
+                    string salt = PasswordHash.GetSalt();
+                    string hash = PasswordHash.hashPassword(model.Password + salt);
 
                     db.User.Add(new User { Email = model.Email, Password = hash, Name = model.Name, ProfilePicture = 0, Surname = model.Surname, Username = model.Username, Salt = salt });
 
