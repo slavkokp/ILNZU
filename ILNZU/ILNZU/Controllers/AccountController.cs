@@ -84,13 +84,11 @@ namespace ILNZU.Controllers
         public async Task<IActionResult> Register(RegisterModel model)
         {
             if (ModelState.IsValid)
-            {
-                User user = await db.User.FirstOrDefaultAsync(u => u.Email == model.Email);
-                if (user == null)
+            {   
+                try
                 {
                     string salt = GetSalt();
                     string hash = hashPassword(model.Password + salt);
-
 
                     db.User.Add(new User { Email = model.Email, Password = hash, Name = model.Name, ProfilePicture = 0, Surname = model.Surname, Username = model.Username, Salt = salt });
 
@@ -100,8 +98,17 @@ namespace ILNZU.Controllers
 
                     return RedirectToAction("Index", "Home");
                 }
-                else
-                    ModelState.AddModelError("", "Wrong input data");
+                catch(DbUpdateException e)
+                {
+                    if (e.InnerException.Message.Split(":")[0] == "23505")
+                    {
+                        ModelState.AddModelError("", "Email already taken");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", e.InnerException.Message);
+                    }
+                }
             }
             return View(model);
         }
