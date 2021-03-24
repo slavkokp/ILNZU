@@ -22,7 +22,7 @@ namespace ILNZU.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            return View();
+            return View("Index", User.Identity.Name);
         }
 
         [Authorize]

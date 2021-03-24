@@ -58,7 +58,7 @@ namespace ILNZU.Controllers
                 User user = await db.User.FirstOrDefaultAsync(u => u.Email == model.Email);
                 if (user == null)
                 {
-                    db.User.Add(new User { Email = model.Email, Password = model.Password, Name = model.Name, ProfilePictureId = 0, Surname = model.Surname, Username = model.Username });
+                    db.User.Add(new User { Email = model.Email, Password = model.Password, Name = model.Name, ProfilePicture = 0, Surname = model.Surname, Username = model.Username });
                     await db.SaveChangesAsync();
 
                     await Authenticate(model.Email);
