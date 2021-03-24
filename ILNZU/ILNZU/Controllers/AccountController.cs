@@ -92,7 +92,7 @@ namespace ILNZU.Controllers
                     string hash = hashPassword(model.Password + salt);
 
 
-                    db.User.Add(new User { Email = model.Email, Password = hash, Name = model.Name, ProfilePictureId = 0, Surname = model.Surname, Username = model.Username, Salt = salt });
+                    db.User.Add(new User { Email = model.Email, Password = hash, Name = model.Name, ProfilePicture = 0, Surname = model.Surname, Username = model.Username, Salt = salt });
 
                     await db.SaveChangesAsync();
 
