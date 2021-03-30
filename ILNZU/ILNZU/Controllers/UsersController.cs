@@ -54,7 +54,7 @@ namespace ILNZU.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Email,Username,Password,Name,Surname,ProfilePictureId")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Email,Username,Password,Name,Surname,ProfilePicture,Salt")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace ILNZU.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Email,Username,Password,Name,Surname,ProfilePictureId")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Email,Username,Password,Name,Surname,ProfilePicture,Salt")] User user)
         {
             if (id != user.Id)
             {

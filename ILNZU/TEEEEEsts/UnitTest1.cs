@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using Xunit;
 
@@ -8,7 +9,6 @@ namespace TEEEEEsts
         [Fact]
         public void Test1()
         {
-
         }
     }
 }

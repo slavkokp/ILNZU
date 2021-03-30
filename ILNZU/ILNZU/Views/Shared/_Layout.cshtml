@@ -27,7 +27,16 @@
                     </ul>
                 </div>
             </div>
+            <div>
+                @User.Identity.Name
+            </div>
+            <form asp-action="Logout" asp-controller="Account">
+                <div>
+                    <input type="submit" value="Logout" class="btn btn-outline-dark" />
+                </div>
+            </form>
         </nav>
+        
     </header>
     <div class="container">
         <main role="main" class="pb-3">

@@ -1,5 +1,6 @@
 ﻿using ILNZU.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -18,11 +19,13 @@ namespace ILNZU.Controllers
             _logger = logger;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
-            return View();
+            return View("Index", User.Identity.Name);
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();
