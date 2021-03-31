@@ -37,6 +37,7 @@ namespace ILNZU
                 {
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
                 });
+            services.AddSignalR();
             services.AddControllersWithViews();
         }
 
@@ -65,6 +66,7 @@ namespace ILNZU
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<ChatHub>("/chat");
             });
         }
     }
