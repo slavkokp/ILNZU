@@ -13,7 +13,7 @@ namespace DAL.Models
         [Required]
         public string Title { get; set; }
 
-        public int UserId { get; set; }
+        public int UserId { get; set; } // Creator of the room
         public User User { get; set; }
     }
 }
