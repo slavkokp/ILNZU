@@ -12,9 +12,9 @@ namespace ILNZU.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly MvcUserContext _context;
+        private readonly ILNZU_dbContext _context;
 
-        public UsersController(MvcUserContext context)
+        public UsersController(ILNZU_dbContext context)
         {
             _context = context;
         }

@@ -16,8 +16,8 @@ namespace ILNZU.Controllers
 {
     public class AccountController : Controller
     {
-        private MvcUserContext db;
-        public AccountController(MvcUserContext context)
+        private ILNZU_dbContext db;
+        public AccountController(ILNZU_dbContext context)
         {
             db = context;
         }

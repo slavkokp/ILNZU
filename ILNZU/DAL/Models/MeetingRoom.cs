@@ -7,11 +7,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Models
 {
-    class MeetingRoom
+    public class MeetingRoom
     {
         public int MeetingRoomId { get; set; }
-        public int AdminId { get; set; }
         [Required]
         public string Title { get; set; }
+
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
 }

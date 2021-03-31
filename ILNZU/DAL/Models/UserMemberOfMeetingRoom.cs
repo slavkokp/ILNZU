@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace DAL.Models
 {
-    class UserMemberOfMeetingRoom
+    public class UserMemberOfMeetingRoom
     {
         public int UserId { get; set; }
+        public User User { get; set; }
+
         public int MeetingRoomId { get; set; }
+        public MeetingRoom MeetingRoom { get; set; }
     }
 }

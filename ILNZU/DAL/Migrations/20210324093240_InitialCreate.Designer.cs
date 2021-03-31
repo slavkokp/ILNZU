@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DAL.Migrations
 {
-    [DbContext(typeof(MvcUserContext))]
+    [DbContext(typeof(Data.ILNZU_dbContext))]
     [Migration("20210324093240_InitialCreate")]
     partial class InitialCreate
     {
