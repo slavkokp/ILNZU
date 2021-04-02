@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using ILNZU.ViewModels;
+using DAL;
 
 namespace ILNZU.Controllers
 {
@@ -13,6 +15,12 @@ namespace ILNZU.Controllers
         public IActionResult Room(int? id)
         {
             return View(id);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> CreateRoom(RoomModel model)
+        {
+            DBManager.createRoom(model.Title, );
         }
     }
 }

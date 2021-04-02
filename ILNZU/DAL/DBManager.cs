@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DAL.Data;
-using DAL;
+using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL
 {
-    class DBManager
+    public class DBManager
     {
         private static ILNZU_dbContext db;
 
@@ -17,11 +16,42 @@ namespace DAL
             db = dbContext;
         }
 
-        public List<int> getUsers(int meetingRoomId)
+        public static List<int> getUsers(int meetingRoomId)
         {
             return (from pairs in db.UserMemberOfMeetingRoom
                     where pairs.MeetingRoomId == meetingRoomId
                     select pairs.UserId).ToList();
+        }
+
+       public async static Task<User> findUser(string email)
+        {
+            return await db.User.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+
+        public async static Task<User> findUser(string email, string SaltedPassword)
+        {
+            string hash = PasswordHash.hashPassword(SaltedPassword);
+            return await db.User.FirstOrDefaultAsync(u => u.Email == email && u.Password == hash);
+        }
+
+        public async static Task<int> addUser(string email, string password, string name, string surname, string username)
+        {
+            string salt = PasswordHash.GetSalt();
+            string hash = PasswordHash.hashPassword(password + salt);
+
+            User u = new User { Email = email, Password = hash, Name = name, ProfilePicture = 0, Surname = surname, Username = username, Salt = salt };
+            db.User.Add(u);
+
+            await db.SaveChangesAsync();
+
+            return u.Id;
+        }
+        public async static void createRoom(string title, int userId)
+        {
+            MeetingRoom room = new MeetingRoom { Title = title, UserId = userId};
+            db.Add(room);
+            await db.SaveChangesAsync();
         }
     }
 }
