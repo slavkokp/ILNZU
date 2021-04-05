@@ -48,8 +48,11 @@ namespace DAL
 
         public async void createMessage(Message message)
         {
-            db.Add(message);
-            await db.SaveChangesAsync();
+            using (var dba = new ILNZU_dbContext())
+            {
+                dba.Add(message);
+                await dba.SaveChangesAsync();
+            }
         }
 
         public async Task<List<Message>> getMessages(int id)
@@ -68,9 +71,13 @@ namespace DAL
 
         public async Task<List<int>> getUsers(int meetingRoomId)
         {
-            return await Task.Run(() => (from pairs in db.UserMemberOfMeetingRoom
-                                         where pairs.MeetingRoomId == meetingRoomId
-                                         select pairs.UserId).ToList());
+            using (var dba = new ILNZU_dbContext())
+            {
+                return await Task.Run(() => (from pairs in dba.UserMemberOfMeetingRoom
+                                             where pairs.MeetingRoomId == meetingRoomId
+                                             select pairs.UserId).ToList());
+            }
+            
         }
     }
 }

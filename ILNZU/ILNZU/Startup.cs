@@ -33,8 +33,10 @@ namespace ILNZU
             services.AddTransient<DBRepository>();
             //services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
-            services.AddDbContext<ILNZU_dbContext>(options =>
-            options.UseNpgsql(Configuration.GetConnectionString("ILNZU_dbContext")));
+            services.AddDbContext<ILNZU_dbContext>();
+
+            //options =>
+            //options.UseNpgsql(Configuration.GetConnectionString("ILNZU_dbContext"))
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => //CookieAuthenticationOptions

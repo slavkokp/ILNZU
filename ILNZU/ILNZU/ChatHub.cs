@@ -27,7 +27,6 @@ namespace ILNZU
             message.UserId = Convert.ToInt32(Context.UserIdentifier);
             dbRepository.createMessage(message);
             var userIds = await dbRepository.getUsers(meetingRoomId);
-            
             await Clients.Users(userIds.ConvertAll(x => x.ToString())).SendAsync("Receive", message, Context.User.Identity.Name);
         }
     }

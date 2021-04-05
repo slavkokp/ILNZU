@@ -19,7 +19,7 @@
     hubConnection.on("Receive", function (message, userName) {
 
         let userNameElem = document.createElement("b");
-        userNameElem.appendChild(document.createTextNode(message.datetime + userName + ": "));
+        userNameElem.appendChild(document.createTextNode(message.Text + " " + userName + ": "));
 
         let elem = document.createElement("p");
         elem.appendChild(userNameElem);
