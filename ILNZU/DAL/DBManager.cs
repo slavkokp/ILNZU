@@ -16,12 +16,6 @@ namespace DAL
             db = dbContext;
         }
 
-        public List<int> getUsers(int meetingRoomId)
-        {
-            return (from pairs in db.UserMemberOfMeetingRoom
-                    where pairs.MeetingRoomId == meetingRoomId
-                    select pairs.UserId).ToList();
-        }
 
        public async Task<User> findUser(string email)
         {
@@ -52,6 +46,25 @@ namespace DAL
             MeetingRoom room = new MeetingRoom { Title = title, UserId = userId};
             db.Add(room);
             await db.SaveChangesAsync();
+        }
+
+        public async Task<List<Message>> getMessages(int id)
+        {
+            return await Task.Run(() => (from mes in db.Message
+                    where mes.MeetingRoomId == id
+                    select mes).ToList());
+        }
+        public async Task<List<int>> getMeetings(int id)
+        {
+            return await Task.Run(() => (from pairs in db.UserMemberOfMeetingRoom
+                    where pairs.UserId == id
+                    select pairs.MeetingRoomId).ToList());
+        }
+        public async Task<List<int>> getUsers(int meetingRoomId)
+        {
+            return await Task.Run(() => (from pairs in db.UserMemberOfMeetingRoom
+                                         where pairs.MeetingRoomId == meetingRoomId
+                                         select pairs.UserId).ToList());
         }
     }
 }
