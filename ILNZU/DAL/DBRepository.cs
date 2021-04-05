@@ -7,21 +7,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL
 {
-    public class DBManager
+    public class DBRepository
     {
-        private ILNZU_dbContext db;
-
-        public DBManager(ILNZU_dbContext dbContext)
+        private readonly ILNZU_dbContext db;
+        public DBRepository(ILNZU_dbContext db)
         {
-            db = dbContext;
+            this.db = db;
         }
 
-
-       public async Task<User> findUser(string email)
+        public async Task<User> findUser(string email)
         {
             return await db.User.FirstOrDefaultAsync(u => u.Email == email);
         }
-
 
         public async Task<User> findUser(string email, string SaltedPassword)
         {
@@ -41,6 +38,7 @@ namespace DAL
 
             return u.Id;
         }
+
         public async void createRoom(string title, int userId)
         {
             MeetingRoom room = new MeetingRoom { Title = title, UserId = userId};
@@ -54,12 +52,14 @@ namespace DAL
                     where mes.MeetingRoomId == id
                     select mes).ToList());
         }
+
         public async Task<List<int>> getMeetings(int id)
         {
             return await Task.Run(() => (from pairs in db.UserMemberOfMeetingRoom
                     where pairs.UserId == id
                     select pairs.MeetingRoomId).ToList());
         }
+
         public async Task<List<int>> getUsers(int meetingRoomId)
         {
             return await Task.Run(() => (from pairs in db.UserMemberOfMeetingRoom

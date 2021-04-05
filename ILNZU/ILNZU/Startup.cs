@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.SignalR;
+using DAL;
 using DAL.Data;
 using ILNZU.Services;
 
@@ -29,6 +30,7 @@ namespace ILNZU
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddTransient<DBRepository>();
             //services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
             services.AddDbContext<ILNZU_dbContext>(options =>

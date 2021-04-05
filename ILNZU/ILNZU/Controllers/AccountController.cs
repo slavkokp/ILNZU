@@ -18,10 +18,10 @@ namespace ILNZU.Controllers
     public class AccountController : Controller
     {
         private ILNZU_dbContext db;
-        private DBManager dbManager;
-        public AccountController(ILNZU_dbContext context)
+        private DBRepository dbRepository;
+        public AccountController(ILNZU_dbContext context, DBRepository rep)
         {
-            dbManager = new DBManager(context);
+            dbRepository = rep;
             db = context;
         }
 
@@ -37,11 +37,11 @@ namespace ILNZU.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = dbManager.findUser(model.Email).Result;
+                User user = dbRepository.findUser(model.Email).Result;
                 if (user != null)
                 {
                     string SaltedPassword = model.Password + user.Salt;
-                    User ExistingUser = dbManager.findUser(model.Email, SaltedPassword).Result;
+                    User ExistingUser = dbRepository.findUser(model.Email, SaltedPassword).Result;
                     if (ExistingUser != null)
                     {
                         await Authenticate(model.Email, ExistingUser.Id);
@@ -69,7 +69,7 @@ namespace ILNZU.Controllers
             {   
                 try
                 {
-                    int userId = dbManager.addUser(model.Email, model.Password, model.Name, model.Surname, model.Username).Result;
+                    int userId = dbRepository.addUser(model.Email, model.Password, model.Name, model.Surname, model.Username).Result;
 
                     await Authenticate(model.Email, userId);
 
