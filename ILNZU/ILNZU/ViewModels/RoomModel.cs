@@ -12,4 +12,3 @@ namespace ILNZU.ViewModels
         public string Title { get; set; }
     }
 }
-}

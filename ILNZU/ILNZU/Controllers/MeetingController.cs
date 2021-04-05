@@ -17,10 +17,10 @@ namespace ILNZU.Controllers
             return View(id);
         }
 
-        [Authorize]
-        public async Task<IActionResult> CreateRoom(RoomModel model)
-        {
-            DBManager.createRoom(model.Title, );
-        }
+        //[Authorize]
+        //public async Task<IActionResult> CreateRoom(RoomModel model)
+        //{
+        //    DBManager.createRoom(model.Title, );
+        //}
     }
 }
