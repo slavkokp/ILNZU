@@ -17,12 +17,10 @@ namespace ILNZU.Controllers
 {
     public class AccountController : Controller
     {
-        private ILNZU_dbContext db;
         private DBRepository dbRepository;
-        public AccountController(ILNZU_dbContext context, DBRepository rep)
+        public AccountController( DBRepository rep)
         {
             dbRepository = rep;
-            db = context;
         }
 
         [HttpGet]

@@ -46,6 +46,12 @@ namespace DAL
             await db.SaveChangesAsync();
         }
 
+        public async void createMessage(Message message)
+        {
+            db.Add(message);
+            await db.SaveChangesAsync();
+        }
+
         public async Task<List<Message>> getMessages(int id)
         {
             return await Task.Run(() => (from mes in db.Message

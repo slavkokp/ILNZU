@@ -13,16 +13,22 @@ namespace ILNZU
     [Authorize]
     public class ChatHub : Hub
     {
-        private DBRepository dbManager;
+        private DBRepository dbRepository;
 
-        public ChatHub(DBRepository dbManager)
+        public ChatHub(DBRepository dbRepository)
         {
-            this.dbManager = dbManager;
+            this.dbRepository = dbRepository;
         }
 
-        public async Task Send(string message, int meetingRoomId)
+        public async Task Send(Message message, int meetingRoomId)
         {
-            await Clients.User(Context.UserIdentifier).SendAsync("Receive", message, Context.User.Identity.Name);
+            message.DateTime = DateTime.Now;
+            message.MeetingRoomId = meetingRoomId;
+            message.UserId = Convert.ToInt32(Context.UserIdentifier);
+            dbRepository.createMessage(message);
+            var userIds = await dbRepository.getUsers(meetingRoomId);
+            
+            await Clients.Users(userIds.ConvertAll(x => x.ToString())).SendAsync("Receive", message, Context.User.Identity.Name);
         }
     }
 }

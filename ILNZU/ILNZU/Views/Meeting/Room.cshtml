@@ -19,11 +19,11 @@
     hubConnection.on("Receive", function (message, userName) {
 
         let userNameElem = document.createElement("b");
-        userNameElem.appendChild(document.createTextNode(userName + ": "));
+        userNameElem.appendChild(document.createTextNode(message.datetime + userName + ": "));
 
         let elem = document.createElement("p");
         elem.appendChild(userNameElem);
-        elem.appendChild(document.createTextNode(message));
+        elem.appendChild(document.createTextNode(message.text));
 
         var firstElem = document.getElementById("chatroom").firstChild;
         document.getElementById("chatroom").insertBefore(elem, firstElem);
@@ -31,8 +31,8 @@
     });
 
     document.getElementById("sendBtn").addEventListener("click", function (e) {
-        let message = document.getElementById("message").value;
-        hubConnection.invoke("Send", message, @Model);
+        let text = document.getElementById("message").value;
+        hubConnection.invoke("Send", { "text": text }, @Model);
     });
 
     hubConnection.start();
