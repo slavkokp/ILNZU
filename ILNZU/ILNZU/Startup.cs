@@ -40,6 +40,7 @@ namespace ILNZU
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
                 });
             services.AddSignalR();
+   
             services.AddControllersWithViews();
         }
 
