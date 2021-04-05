@@ -9,33 +9,33 @@ namespace DAL
 {
     public class DBManager
     {
-        private static ILNZU_dbContext db;
+        private ILNZU_dbContext db;
 
         public DBManager(ILNZU_dbContext dbContext)
         {
             db = dbContext;
         }
 
-        public static List<int> getUsers(int meetingRoomId)
+        public List<int> getUsers(int meetingRoomId)
         {
             return (from pairs in db.UserMemberOfMeetingRoom
                     where pairs.MeetingRoomId == meetingRoomId
                     select pairs.UserId).ToList();
         }
 
-       public async static Task<User> findUser(string email)
+       public async Task<User> findUser(string email)
         {
             return await db.User.FirstOrDefaultAsync(u => u.Email == email);
         }
 
 
-        public async static Task<User> findUser(string email, string SaltedPassword)
+        public async Task<User> findUser(string email, string SaltedPassword)
         {
             string hash = PasswordHash.hashPassword(SaltedPassword);
             return await db.User.FirstOrDefaultAsync(u => u.Email == email && u.Password == hash);
         }
 
-        public async static Task<int> addUser(string email, string password, string name, string surname, string username)
+        public async Task<int> addUser(string email, string password, string name, string surname, string username)
         {
             string salt = PasswordHash.GetSalt();
             string hash = PasswordHash.hashPassword(password + salt);
@@ -47,7 +47,7 @@ namespace DAL
 
             return u.Id;
         }
-        public async static void createRoom(string title, int userId)
+        public async void createRoom(string title, int userId)
         {
             MeetingRoom room = new MeetingRoom { Title = title, UserId = userId};
             db.Add(room);

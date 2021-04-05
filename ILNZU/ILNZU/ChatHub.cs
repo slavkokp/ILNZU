@@ -12,7 +12,9 @@ namespace ILNZU
     {
         public async Task Send(string message, int meetingRoomId)
         {
-            await Clients.All.SendAsync("Receive", message, Context.User.Identity.Name);
+            //await Clients.All.SendAsync("Receive", message, Context.User.Identity.Name);
+            Console.WriteLine(Context.UserIdentifier);
+            await Clients.User(Context.UserIdentifier).SendAsync("Recieve", message, Context.User.Identity.Name);
         }
     }
 }

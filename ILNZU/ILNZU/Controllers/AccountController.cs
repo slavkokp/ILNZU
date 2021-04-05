@@ -18,8 +18,10 @@ namespace ILNZU.Controllers
     public class AccountController : Controller
     {
         private ILNZU_dbContext db;
+        private DBManager dbManager;
         public AccountController(ILNZU_dbContext context)
         {
+            dbManager = new DBManager(context);
             db = context;
         }
 
@@ -35,11 +37,11 @@ namespace ILNZU.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = DBManager.findUser(model.Email).Result;
+                User user = dbManager.findUser(model.Email).Result;
                 if (user != null)
                 {
                     string SaltedPassword = model.Password + user.Salt;
-                    User ExistingUser = DBManager.findUser(model.Email, SaltedPassword).Result;
+                    User ExistingUser = dbManager.findUser(model.Email, SaltedPassword).Result;
                     if (ExistingUser != null)
                     {
                         await Authenticate(model.Email, ExistingUser.Id);
@@ -67,7 +69,7 @@ namespace ILNZU.Controllers
             {   
                 try
                 {
-                    int userId = DBManager.addUser(model.Email, model.Password, model.Name, model.Surname, model.Username).Result;
+                    int userId = dbManager.addUser(model.Email, model.Password, model.Name, model.Surname, model.Username).Result;
 
                     await Authenticate(model.Email, userId);
 
@@ -93,7 +95,7 @@ namespace ILNZU.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
-                new Claim(ClaimsIdentity.DefaultNameClaimType, UserId.ToString())
+                new Claim(ClaimTypes.NameIdentifier, UserId.ToString())
             };
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
