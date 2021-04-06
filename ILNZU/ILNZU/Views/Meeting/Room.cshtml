@@ -1,4 +1,5 @@
-﻿@model int
+﻿@using DAL.Models
+@model List<Message>
 
 <div id="header"></div>
 <br />
@@ -8,7 +9,16 @@
     <input type="button" id="sendBtn" value="Send" />
 </div>
 
-<div id="chatroom"></div>
+<div id="chatroom">
+    @foreach (var msg in Model)
+    {
+        string sender = msg.DateTime + " " + msg.User.Name + ": ";
+        <p>
+            <b>@sender</b>
+            @msg.Text
+        </p>
+    }
+</div>
 
 <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
 <script>
@@ -18,8 +28,10 @@
 
     hubConnection.on("Receive", function (message, userName) {
 
+        let time = new Date(message.datetime)
+
         let userNameElem = document.createElement("b");
-        userNameElem.appendChild(document.createTextNode(message.Text + " " + userName + ": "));
+        userNameElem.appendChild(document.createTextNode(time.toLocaleString().replace(',', '') + " " + userName + ": "));
 
         let elem = document.createElement("p");
         elem.appendChild(userNameElem);
@@ -32,7 +44,7 @@
 
     document.getElementById("sendBtn").addEventListener("click", function (e) {
         let text = document.getElementById("message").value;
-        hubConnection.invoke("Send", { "text": text }, @Model);
+        hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId);
     });
 
     hubConnection.start();

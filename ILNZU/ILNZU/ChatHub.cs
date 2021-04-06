@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.SignalR;
 using DAL;
 using DAL.Data;
 using DAL.Models;
+using System.Security.Claims;
 
 namespace ILNZU
 {
@@ -29,5 +30,15 @@ namespace ILNZU
             var userIds = await dbRepository.getUsers(meetingRoomId);
             await Clients.Users(userIds.ConvertAll(x => x.ToString())).SendAsync("Receive", message, Context.User.Identity.Name);
         }
+
+        //public override async Task OnConnectedAsync()
+        //{
+        //    foreach (Message message in dbRepository.getMessages())
+        //    {
+
+        //    }
+        //    await Clients.Caller.SendAsync("Receive", message, Context.User.Identity.Name);
+        //    await base.OnConnectedAsync();
+        //}
     }
 }

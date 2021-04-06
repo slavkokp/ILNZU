@@ -18,7 +18,7 @@ namespace ILNZU.Controllers
     public class AccountController : Controller
     {
         private DBRepository dbRepository;
-        public AccountController( DBRepository rep)
+        public AccountController(DBRepository rep)
         {
             dbRepository = rep;
         }
@@ -42,7 +42,7 @@ namespace ILNZU.Controllers
                     User ExistingUser = dbRepository.findUser(model.Email, SaltedPassword).Result;
                     if (ExistingUser != null)
                     {
-                        await Authenticate(model.Email, ExistingUser.Id);
+                        await Authenticate(model.Email, ExistingUser.Id, ExistingUser.Name);
 
                         return RedirectToAction("Index", "Home");
                     }
@@ -69,7 +69,7 @@ namespace ILNZU.Controllers
                 {
                     int userId = dbRepository.addUser(model.Email, model.Password, model.Name, model.Surname, model.Username).Result;
 
-                    await Authenticate(model.Email, userId);
+                    await Authenticate(model.Email, userId, model.Name);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -88,12 +88,13 @@ namespace ILNZU.Controllers
             return View(model);
         }
 
-        private async Task Authenticate(string userName, int UserId)
+        private async Task Authenticate(string Email, int UserId, string Name)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
-                new Claim(ClaimTypes.NameIdentifier, UserId.ToString())
+                new Claim(ClaimsIdentity.DefaultNameClaimType, Name),
+                new Claim(ClaimTypes.NameIdentifier, UserId.ToString()),
+                new Claim(ClaimTypes.Email, Email)
             };
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));

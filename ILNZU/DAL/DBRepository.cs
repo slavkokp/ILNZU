@@ -9,71 +9,91 @@ namespace DAL
 {
     public class DBRepository
     {
-        private readonly ILNZU_dbContext db;
-        public DBRepository(ILNZU_dbContext db)
+        public async Task<User> findUser(int id)
         {
-            this.db = db;
+            using (var db = new ILNZU_dbContext())
+            {
+                return await db.User.FirstOrDefaultAsync(u => u.Id == id);
+            }
         }
 
         public async Task<User> findUser(string email)
         {
-            return await db.User.FirstOrDefaultAsync(u => u.Email == email);
+            using (var db = new ILNZU_dbContext())
+            {
+                return await db.User.FirstOrDefaultAsync(u => u.Email == email);
+            }
         }
 
         public async Task<User> findUser(string email, string SaltedPassword)
         {
-            string hash = PasswordHash.hashPassword(SaltedPassword);
-            return await db.User.FirstOrDefaultAsync(u => u.Email == email && u.Password == hash);
+            using (var db = new ILNZU_dbContext())
+            {
+                string hash = PasswordHash.hashPassword(SaltedPassword);
+                return await db.User.FirstOrDefaultAsync(u => u.Email == email && u.Password == hash);
+            }
         }
 
         public async Task<int> addUser(string email, string password, string name, string surname, string username)
         {
+
             string salt = PasswordHash.GetSalt();
             string hash = PasswordHash.hashPassword(password + salt);
+            using (var db = new ILNZU_dbContext())
+            {
+                User u = new User { Email = email, Password = hash, Name = name, ProfilePicture = 0, Surname = surname, Username = username, Salt = salt };
+                db.User.Add(u);
 
-            User u = new User { Email = email, Password = hash, Name = name, ProfilePicture = 0, Surname = surname, Username = username, Salt = salt };
-            db.User.Add(u);
+                await db.SaveChangesAsync();
 
-            await db.SaveChangesAsync();
-
-            return u.Id;
+                return u.Id;
+            }
         }
 
         public async void createRoom(string title, int userId)
         {
-            MeetingRoom room = new MeetingRoom { Title = title, UserId = userId};
-            db.Add(room);
-            await db.SaveChangesAsync();
+            using (var db = new ILNZU_dbContext())
+            {
+                MeetingRoom room = new MeetingRoom { Title = title, UserId = userId };
+                db.Add(room);
+                await db.SaveChangesAsync();
+            }
         }
 
         public async void createMessage(Message message)
         {
-            using (var dba = new ILNZU_dbContext())
+            using (var db = new ILNZU_dbContext())
             {
-                dba.Add(message);
-                await dba.SaveChangesAsync();
+                db.Add(message);
+                await db.SaveChangesAsync();
             }
         }
 
         public async Task<List<Message>> getMessages(int id)
         {
-            return await Task.Run(() => (from mes in db.Message
-                    where mes.MeetingRoomId == id
-                    select mes).ToList());
+            using (var db = new ILNZU_dbContext())
+            {
+                return await Task.Run(() => (from mes in db.Message
+                                             where mes.MeetingRoomId == id
+                                             select mes).ToList());
+            }
         }
 
         public async Task<List<int>> getMeetings(int id)
         {
-            return await Task.Run(() => (from pairs in db.UserMemberOfMeetingRoom
-                    where pairs.UserId == id
-                    select pairs.MeetingRoomId).ToList());
+            using (var db = new ILNZU_dbContext())
+            {
+                return await Task.Run(() => (from pairs in db.UserMemberOfMeetingRoom
+                                             where pairs.UserId == id
+                                             select pairs.MeetingRoomId).ToList());
+            }
         }
 
         public async Task<List<int>> getUsers(int meetingRoomId)
         {
-            using (var dba = new ILNZU_dbContext())
+            using (var db = new ILNZU_dbContext())
             {
-                return await Task.Run(() => (from pairs in dba.UserMemberOfMeetingRoom
+                return await Task.Run(() => (from pairs in db.UserMemberOfMeetingRoom
                                              where pairs.MeetingRoomId == meetingRoomId
                                              select pairs.UserId).ToList());
             }
