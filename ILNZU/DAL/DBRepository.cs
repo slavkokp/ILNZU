@@ -35,6 +35,19 @@ namespace DAL
             }
         }
 
+        public async Task<bool> checkIfUserIsMemberOfMeetingRoom(int userId, int meetingRoomId)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                UserMemberOfMeetingRoom member = await db.UserMemberOfMeetingRoom.FirstOrDefaultAsync(u => u.UserId == userId && u.MeetingRoomId == meetingRoomId);
+                if(member == null)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
         public async Task<int> addUser(string email, string password, string name, string surname, string username)
         {
 

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using ILNZU.ViewModels;
 using DAL;
 using DAL.Models;
+using System.Security.Claims;
 
 namespace ILNZU.Controllers
 {
@@ -21,7 +22,8 @@ namespace ILNZU.Controllers
         [Authorize]
         public async Task<IActionResult> Room(int? id)
         {
-            if (true) // todo : add check if user is a member of meeting room with id
+            bool allowed = await rep.checkIfUserIsMemberOfMeetingRoom(Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value), Convert.ToInt32(id));
+            if (allowed)
             {
                 ViewBag.MeetingRoomId = id;
                 List<Message> messages = await rep.getMessages(Convert.ToInt32(id));
@@ -32,7 +34,7 @@ namespace ILNZU.Controllers
                 }
                 return View(messages);
             }
-            // return Access Denied view
+            return View("Error"); // todo : change error view to page not found 
         }
 
         //[Authorize]
