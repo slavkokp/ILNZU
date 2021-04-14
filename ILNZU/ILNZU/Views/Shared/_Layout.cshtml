@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims; 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -29,7 +30,7 @@
                 </div>
             </div>
             <div>
-                @User.Identity.Name
+                @User.FindFirst(ClaimTypes.Email)?.Value
             </div>
             <form asp-action="Logout" asp-controller="Account">
                 <div class="logout-btn">

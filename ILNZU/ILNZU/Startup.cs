@@ -8,10 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
-
+using Microsoft.AspNetCore.SignalR;
+using DAL;
+using DAL.Data;
+using ILNZU.Services;
 
 namespace ILNZU
 {
@@ -28,15 +30,21 @@ namespace ILNZU
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddTransient<DBRepository>();
+            //services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
-            services.AddDbContext<MvcUserContext>(options =>
-            options.UseNpgsql(Configuration.GetConnectionString("MvcUserContext")));
+            services.AddDbContext<ILNZU_dbContext>();
+
+            //options =>
+            //options.UseNpgsql(Configuration.GetConnectionString("ILNZU_dbContext"))
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => //CookieAuthenticationOptions
                 {
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
                 });
+            services.AddSignalR();
+   
             services.AddControllersWithViews();
         }
 
@@ -62,6 +70,7 @@ namespace ILNZU
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ChatHub>("/chat");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

@@ -1,0 +1,52 @@
+﻿@using DAL.Models
+@model List<Message>
+
+<div id="header"></div>
+<br />
+
+<div id="inputForm">
+    <input type="text" id="message" />
+    <input type="button" id="sendBtn" value="Send" />
+</div>
+
+<div id="chatroom">
+    @foreach (var msg in Model)
+    {
+        string sender = msg.DateTime + " " + msg.User.Name + ": ";
+        <p>
+            <b>@sender</b>
+            @msg.Text
+        </p>
+    }
+</div>
+
+<script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+<script>
+    const hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/chat")
+        .build();
+
+    hubConnection.on("Receive", function (message, userName, meetingRoomId) {
+
+        if (meetingRoomId == @ViewBag.MeetingRoomId) {
+            let time = new Date(message.datetime)
+
+            let userNameElem = document.createElement("b");
+            userNameElem.appendChild(document.createTextNode(time.toLocaleString().replace(',', '') + " " + userName + ": "));
+
+            let elem = document.createElement("p");
+            elem.appendChild(userNameElem);
+            elem.appendChild(document.createTextNode(message.text));
+
+            var firstElem = document.getElementById("chatroom").firstChild;
+            document.getElementById("chatroom").insertBefore(elem, firstElem);
+        }
+    });
+
+    document.getElementById("sendBtn").addEventListener("click", function (e) {
+        let text = document.getElementById("message").value;
+        hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId);
+    });
+
+    hubConnection.start();
+</script>

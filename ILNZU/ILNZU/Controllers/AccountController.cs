@@ -11,15 +11,16 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Cryptography;
 using System.Text;
 using DAL;
+using System;
 
 namespace ILNZU.Controllers
 {
     public class AccountController : Controller
     {
-        private MvcUserContext db;
-        public AccountController(MvcUserContext context)
+        private DBRepository dbRepository;
+        public AccountController(DBRepository rep)
         {
-            db = context;
+            dbRepository = rep;
         }
 
         [HttpGet]
@@ -34,14 +35,14 @@ namespace ILNZU.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = await db.User.FirstOrDefaultAsync(u => u.Email == model.Email);
+                User user = dbRepository.FindUser(model.Email).Result;
                 if (user != null)
                 {
-                    string hash = PasswordHash.hashPassword(model.Password + user.Salt);
-                    User ExistingUser = await db.User.FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == hash);
+                    string SaltedPassword = model.Password + user.Salt;
+                    User ExistingUser = dbRepository.FindUser(model.Email, SaltedPassword).Result;
                     if (ExistingUser != null)
                     {
-                        await Authenticate(model.Email);
+                        await Authenticate(model.Email, ExistingUser.Id, ExistingUser.Name);
 
                         return RedirectToAction("Index", "Home");
                     }
@@ -66,14 +67,9 @@ namespace ILNZU.Controllers
             {   
                 try
                 {
-                    string salt = PasswordHash.GetSalt();
-                    string hash = PasswordHash.hashPassword(model.Password + salt);
+                    int userId = dbRepository.AddUser(model.Email, model.Password, model.Name, model.Surname, model.Username).Result;
 
-                    db.User.Add(new User { Email = model.Email, Password = hash, Name = model.Name, ProfilePicture = 0, Surname = model.Surname, Username = model.Username, Salt = salt });
-
-                    await db.SaveChangesAsync();
-
-                    await Authenticate(model.Email);
+                    await Authenticate(model.Email, userId, model.Name);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -92,11 +88,13 @@ namespace ILNZU.Controllers
             return View(model);
         }
 
-        private async Task Authenticate(string userName)
+        private async Task Authenticate(string Email, int UserId, string Name)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, Name),
+                new Claim(ClaimTypes.NameIdentifier, UserId.ToString()),
+                new Claim(ClaimTypes.Email, Email)
             };
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
