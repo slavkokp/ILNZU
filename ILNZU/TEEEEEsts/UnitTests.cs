@@ -1,12 +1,20 @@
+﻿// <copyright file="UnitTests.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace TEEEEEsts
 {
-    using System;
     using BLL;
-    using Microsoft.EntityFrameworkCore;
     using Xunit;
 
+    /// <summary>
+    /// Class with Unit tests.
+    /// </summary>
     public class UnitTests
     {
+        /// <summary>
+        /// Function for password hashing testing.
+        /// </summary>
         [Fact]
         public void PasswordHashTheSameTest()
         {
@@ -16,12 +24,15 @@ namespace TEEEEEsts
             Assert.Equal(hash, PasswordHash.HashPassword(saltedPassword));
         }
 
+        /// <summary>
+        /// Function for password hashing testing.
+        /// </summary>
         [Fact]
         public void PasswordHashTest()
         {
             string password = "555";
             string hash = PasswordHash.HashPassword(password);
-            Assert.Equal(hash, "de21c670ae7c3f6f3f1f37029303c9");
+            Assert.Equal("de21c670ae7c3f6f3f1f37029303c9", hash);
         }
 
     }
