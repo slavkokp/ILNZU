@@ -1,26 +1,32 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Serilog;
-using System.Runtime.Serialization;
+// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace ILNZU
 {
+    using System;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Hosting;
+    using Serilog;
+
+    /// <summary>
+    /// Class program.
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Main function.
+        /// </summary>
+        /// <param name="args">arguments.</param>
         public static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Information)
                 .Enrich.FromLogContext()
                 .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
-                //.WriteTo.Console(new Serilog.Formatting.Compact.RenderedCompactJsonFormatter())
-                //.WriteTo.File(new Serilog.Formatting.Compact.RenderedCompactJsonFormatter(), "/logs/log.ndjson")
+
+                // .WriteTo.Console(new Serilog.Formatting.Compact.RenderedCompactJsonFormatter())
+                // .WriteTo.File(new Serilog.Formatting.Compact.RenderedCompactJsonFormatter(), "/logs/log.ndjson")
                 .CreateLogger();
             try
             {
@@ -37,6 +43,11 @@ namespace ILNZU
             }
         }
 
+        /// <summary>
+        /// Creates a host builder.
+        /// </summary>
+        /// <param name="args"> arguments.</param>
+        /// <returns> IHostBuilder object. </returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
             .UseSerilog()
