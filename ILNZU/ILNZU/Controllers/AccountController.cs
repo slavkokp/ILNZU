@@ -35,11 +35,11 @@ namespace ILNZU.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = dbRepository.findUser(model.Email).Result;
+                User user = dbRepository.FindUser(model.Email).Result;
                 if (user != null)
                 {
                     string SaltedPassword = model.Password + user.Salt;
-                    User ExistingUser = dbRepository.findUser(model.Email, SaltedPassword).Result;
+                    User ExistingUser = dbRepository.FindUser(model.Email, SaltedPassword).Result;
                     if (ExistingUser != null)
                     {
                         await Authenticate(model.Email, ExistingUser.Id, ExistingUser.Name);
@@ -67,7 +67,7 @@ namespace ILNZU.Controllers
             {   
                 try
                 {
-                    int userId = dbRepository.addUser(model.Email, model.Password, model.Name, model.Surname, model.Username).Result;
+                    int userId = dbRepository.AddUser(model.Email, model.Password, model.Name, model.Surname, model.Username).Result;
 
                     await Authenticate(model.Email, userId, model.Name);
 

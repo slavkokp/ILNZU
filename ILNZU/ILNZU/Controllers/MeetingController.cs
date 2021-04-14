@@ -22,15 +22,15 @@ namespace ILNZU.Controllers
         [Authorize]
         public async Task<IActionResult> Room(int? id)
         {
-            bool allowed = await rep.checkIfUserIsMemberOfMeetingRoom(Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value), Convert.ToInt32(id));
+            bool allowed = await rep.CheckIfUserIsMemberOfMeetingRoom(Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value), Convert.ToInt32(id));
             if (allowed)
             {
                 ViewBag.MeetingRoomId = id;
-                List<Message> messages = await rep.getMessages(Convert.ToInt32(id));
+                List<Message> messages = await rep.GetMessages(Convert.ToInt32(id));
                 messages = messages.OrderByDescending(msg => msg.DateTime).ToList();
                 foreach (var msg in messages)
                 {
-                    msg.User = await rep.findUser(msg.UserId);
+                    msg.User = await rep.FindUser(msg.UserId);
                 }
                 return View(messages);
             }

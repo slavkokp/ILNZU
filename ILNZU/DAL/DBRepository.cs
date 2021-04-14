@@ -1,16 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DAL.Data;
-using DAL.Models;
-using BLL;
-using Microsoft.EntityFrameworkCore;
-
+﻿// <copyright file="DBRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 namespace DAL
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using BLL;
+    using DAL.Data;
+    using DAL.Models;
+    using Microsoft.EntityFrameworkCore;
+
+    /// <summary>
+    /// A class for DBRepository.
+    /// </summary>
     public class DBRepository
     {
-        public async Task<User> findUser(int id)
+        public async Task<User> FindUser(int id)
         {
             using (var db = new ILNZU_dbContext())
             {
@@ -18,7 +24,7 @@ namespace DAL
             }
         }
 
-        public async Task<User> findUser(string email)
+        public async Task<User> FindUser(string email)
         {
             using (var db = new ILNZU_dbContext())
             {
@@ -26,16 +32,16 @@ namespace DAL
             }
         }
 
-        public async Task<User> findUser(string email, string SaltedPassword)
+        public async Task<User> FindUser(string email, string SaltedPassword)
         {
             using (var db = new ILNZU_dbContext())
             {
-                string hash = PasswordHash.hashPassword(SaltedPassword);
+                string hash = PasswordHash.HashPassword(SaltedPassword);
                 return await db.User.FirstOrDefaultAsync(u => u.Email == email && u.Password == hash);
             }
         }
 
-        public async Task<bool> checkIfUserIsMemberOfMeetingRoom(int userId, int meetingRoomId)
+        public async Task<bool> CheckIfUserIsMemberOfMeetingRoom(int userId, int meetingRoomId)
         {
             using (var db = new ILNZU_dbContext())
             {
@@ -48,11 +54,11 @@ namespace DAL
             }
         }
 
-        public async Task<int> addUser(string email, string password, string name, string surname, string username)
+        public async Task<int> AddUser(string email, string password, string name, string surname, string username)
         {
 
             string salt = PasswordHash.GetSalt();
-            string hash = PasswordHash.hashPassword(password + salt);
+            string hash = PasswordHash.HashPassword(password + salt);
             using (var db = new ILNZU_dbContext())
             {
                 User u = new User { Email = email, Password = hash, Name = name, ProfilePicture = 0, Surname = surname, Username = username, Salt = salt };
@@ -64,7 +70,7 @@ namespace DAL
             }
         }
 
-        public async void createRoom(string title, int userId)
+        public async void CreateRoom(string title, int userId)
         {
             using (var db = new ILNZU_dbContext())
             {
@@ -74,7 +80,7 @@ namespace DAL
             }
         }
 
-        public async void createMessage(Message message)
+        public async void CreateMessage(Message message)
         {
             using (var db = new ILNZU_dbContext())
             {
@@ -83,7 +89,7 @@ namespace DAL
             }
         }
 
-        public async Task<List<Message>> getMessages(int id)
+        public async Task<List<Message>> GetMessages(int id)
         {
             using (var db = new ILNZU_dbContext())
             {
@@ -93,7 +99,7 @@ namespace DAL
             }
         }
 
-        public async Task<List<int>> getMeetings(int id)
+        public async Task<List<int>> GetMeetings(int id)
         {
             using (var db = new ILNZU_dbContext())
             {
@@ -103,7 +109,7 @@ namespace DAL
             }
         }
 
-        public async Task<List<int>> getUsers(int meetingRoomId)
+        public async Task<List<int>> GetUsers(int meetingRoomId)
         {
             using (var db = new ILNZU_dbContext())
             {
