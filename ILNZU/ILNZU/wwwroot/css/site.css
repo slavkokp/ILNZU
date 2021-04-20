@@ -2,7 +2,7 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 
-
+/* login separator */
 .separator {
     display: flex;
     align-items: center;
@@ -23,17 +23,9 @@ for details on configuring this project to bundle and minify static web assets. 
 .separator:not(:empty)::after {
     margin-left: .50em;
 }
+/*-------*/
 
-
-
-/*.logoutbtn
-{
-    background-color:gray;
-    text-decoration: none;
-    cursor: pointer;
-}
-*/
-
+/* User email */
 .user-email p {
     color: white;
     font-weight: 500;
@@ -43,7 +35,9 @@ for details on configuring this project to bundle and minify static web assets. 
     padding-bottom: 5px;
     margin-bottom: 5px;
 }
+/*-------*/
 
+/* Logout button */
 .logout-btn input {
     color: white;
     font-weight: 500;
@@ -54,16 +48,34 @@ for details on configuring this project to bundle and minify static web assets. 
     margin-bottom: 5px;
 }
 
+/*-------*/
+
+/* Frame */
 .form-frame form {
     border: thin black solid;
     margin: 20px;
     padding: 20px;
 }
+/*-------*/
+
+/* Message input */
+
+.message-input {
+    position: absolute;
+}
+
+/*-------*/
+
+/* Char scroll */
+.scroll-chat {
+    height: 500px;
+    overflow-y: scroll;
+}
 
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #0366d6;
 }
 
 .btn-primary {
