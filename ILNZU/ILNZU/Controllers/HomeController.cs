@@ -7,21 +7,24 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using DAL;
 
 namespace ILNZU.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        DBRepository rep;
+        public HomeController(DBRepository rep)
         {
-            _logger = logger;
+            this.rep = rep;
         }
 
         [Authorize]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            ViewBag.MeetingRooms = await rep.GetMeetingRooms(Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            var res = await rep.GetMeetingRooms(Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value));
             return View("Index", User.Identity.Name);
         }
 

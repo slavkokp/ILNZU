@@ -14,6 +14,12 @@
                 <h2>Chat list</h2>
             </div>
 
+            @foreach (var tuple in ViewBag.MeetingRooms)
+            {
+                <p>
+                    <a href=@("https://localhost:44391/meeting/room/" + tuple.Item1.ToString())>@tuple.Item2</a>
+                </p>
+            }
             @* To do: Select user's chat rooms *@
             <div class="col d-flex justify-content-center">
                 <p>User's chat room in progress</p>

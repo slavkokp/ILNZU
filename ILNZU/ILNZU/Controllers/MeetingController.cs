@@ -27,7 +27,7 @@ namespace ILNZU.Controllers
             {
                 ViewBag.MeetingRoomId = id;
                 List<Message> messages = await rep.GetMessages(Convert.ToInt32(id));
-                messages = messages.OrderByDescending(msg => msg.DateTime).ToList();
+                messages = messages.OrderBy(msg => msg.DateTime).ToList();
                 foreach (var msg in messages)
                 {
                     msg.User = await rep.FindUser(msg.UserId);

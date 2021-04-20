@@ -3,6 +3,7 @@
 // </copyright>
 namespace DAL
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -171,6 +172,22 @@ namespace DAL
                 return await Task.Run(() => (from pairs in db.UserMemberOfMeetingRoom
                                              where pairs.MeetingRoomId == meetingRoomId
                                              select pairs.UserId).ToList());
+            }
+        }
+
+        /// <summary>
+        /// Get list of meeting rooms available for user with userid.
+        /// </summary>
+        /// <param name="userId">User ID.</param>
+        /// <returns>List of ints.</returns>
+        public async Task<List<Tuple<int, string>>> GetMeetingRooms(int userId)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                return await Task.Run(() => (from pairs in db.UserMemberOfMeetingRoom
+                                             join meetings in db.MeetingRoom on pairs.MeetingRoomId equals meetings.MeetingRoomId
+                                             where pairs.UserId == userId
+                                             select new Tuple<int, string>(meetings.MeetingRoomId, meetings.Title)).ToList());
             }
         }
     }

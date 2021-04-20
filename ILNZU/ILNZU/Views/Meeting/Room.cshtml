@@ -53,8 +53,7 @@
             elem.appendChild(userNameElem);
             elem.appendChild(document.createTextNode(message.text));
 
-            var firstElem = document.getElementById("chatroom").firstChild;
-            document.getElementById("chatroom").insertBefore(elem, firstElem);
+            document.getElementById("chatroom").appendChild(elem)
         }
     });
 
