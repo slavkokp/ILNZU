@@ -25,6 +25,7 @@ for details on configuring this project to bundle and minify static web assets. 
 }
 
 
+
 /*.logoutbtn
 {
     background-color:gray;
@@ -33,6 +34,15 @@ for details on configuring this project to bundle and minify static web assets. 
 }
 */
 
+.user-email p {
+    color: white;
+    font-weight: 500;
+    outline: none;
+    border: none;
+    margin-top: 8px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
 
 .logout-btn input {
     color: white;

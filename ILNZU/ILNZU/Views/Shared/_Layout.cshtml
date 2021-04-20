@@ -29,8 +29,8 @@
                     </ul>
                 </div>
             </div>
-            <div>
-                @User.FindFirst(ClaimTypes.Email)?.Value
+            <div class="user-email">
+                <p>@User.FindFirst(ClaimTypes.Email)?.Value</p>
             </div>
             <form asp-action="Logout" asp-controller="Account">
                 <div class="logout-btn">
