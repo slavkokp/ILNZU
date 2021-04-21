@@ -28,6 +28,11 @@ namespace ILNZU
             this.dbRepository = dbRepository;
         }
 
+        public async Task SetGroup(int meetingRoomId)
+        {
+            await this.Groups.AddToGroupAsync(this.Context.ConnectionId, meetingRoomId.ToString());
+        }
+
         /// <summary>
         /// Sends a message.
         /// </summary>
@@ -40,18 +45,9 @@ namespace ILNZU
             message.MeetingRoomId = meetingRoomId;
             message.UserId = Convert.ToInt32(this.Context.UserIdentifier);
             this.dbRepository.CreateMessage(message);
-            var userIds = await this.dbRepository.GetUsers(meetingRoomId);
-            await this.Clients.Users(userIds.ConvertAll(x => x.ToString())).SendAsync("Receive", message, this.Context.User.Identity.Name, meetingRoomId);
+            await this.Clients.Group(meetingRoomId.ToString()).SendAsync("Receive", message, this.Context.User.Identity.Name, meetingRoomId);
+
+            // await this.Clients.Users(userIds.ConvertAll(x => x.ToString())).SendAsync("Receive", message, this.Context.User.Identity.Name, meetingRoomId);
         }
-
-        // public override async Task OnConnectedAsync()
-        // {
-        //    foreach (Message message in dbRepository.getMessages())
-        //    {
-
-        // }
-        //    await Clients.Caller.SendAsync("Receive", message, Context.User.Identity.Name);
-        //    await base.OnConnectedAsync();
-        // }
     }
 }

@@ -43,18 +43,16 @@
 
     hubConnection.on("Receive", function (message, userName, meetingRoomId) {
 
-        if (meetingRoomId == @ViewBag.MeetingRoomId) {
-            let time = new Date(message.datetime)
+        let time = new Date(message.datetime);
 
-            let userNameElem = document.createElement("b");
-            userNameElem.appendChild(document.createTextNode(time.toLocaleString().replace(',', '') + " " + userName + ": "));
+        let userNameElem = document.createElement("b");
+        userNameElem.appendChild(document.createTextNode(time.toLocaleString().replace(',', '') + " " + userName + ": "));
 
-            let elem = document.createElement("p");
-            elem.appendChild(userNameElem);
-            elem.appendChild(document.createTextNode(message.text));
+        let elem = document.createElement("p");
+        elem.appendChild(userNameElem);
+        elem.appendChild(document.createTextNode(message.text));
 
-            document.getElementById("chatroom").appendChild(elem)
-        }
+        document.getElementById("chatroom").appendChild(elem);
     });
 
     document.getElementById("sendBtn").addEventListener("click", function (e) {
@@ -62,5 +60,7 @@
         hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId);
     });
 
-    hubConnection.start();
+        hubConnection.start().then(function () {
+            hubConnection.invoke("SetGroup", @ViewBag.MeetingRoomId);
+        });
     </script>
