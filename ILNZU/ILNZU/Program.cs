@@ -23,6 +23,7 @@ namespace ILNZU
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Information)
                 .Enrich.FromLogContext()
+                .WriteTo.Seq("http://localhost:5341/")
                 .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
 
                 // .WriteTo.Console(new Serilog.Formatting.Compact.RenderedCompactJsonFormatter())
