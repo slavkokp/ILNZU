@@ -10,17 +10,18 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Cryptography;
 using System.Text;
-using DAL;
+using BLL.Services;
 using System;
 
 namespace ILNZU.Controllers
 {
     public class AccountController : Controller
     {
-        private DBRepository dbRepository;
-        public AccountController(DBRepository rep)
+        private readonly UserRepository rep;
+
+        public AccountController(UserRepository rep)
         {
-            dbRepository = rep;
+            this.rep = rep;
         }
 
         [HttpGet]
@@ -35,11 +36,11 @@ namespace ILNZU.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = dbRepository.FindUser(model.Email).Result;
+                User user = rep.FindUser(model.Email).Result;
                 if (user != null)
                 {
                     string SaltedPassword = model.Password + user.Salt;
-                    User ExistingUser = dbRepository.FindUser(model.Email, SaltedPassword).Result;
+                    User ExistingUser = rep.FindUser(model.Email, SaltedPassword).Result;
                     if (ExistingUser != null)
                     {
                         await Authenticate(model.Email, ExistingUser.Id, ExistingUser.Name);
@@ -63,11 +64,11 @@ namespace ILNZU.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            if (ModelState.IsValid)
-            {   
+            if (this.ModelState.IsValid)
+            {
                 try
                 {
-                    int userId = dbRepository.AddUser(model.Email, model.Password, model.Name, model.Surname, model.Username).Result;
+                    int userId = rep.AddUser(model.Email, model.Password, model.Name, model.Surname, model.Username).Result;
 
                     await Authenticate(model.Email, userId, model.Name);
 

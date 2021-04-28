@@ -8,14 +8,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
-using DAL;
+using BLL.Services;
 
 namespace ILNZU.Controllers
 {
     public class HomeController : Controller
     {
-        DBRepository rep;
-        public HomeController(DBRepository rep)
+        private readonly MeetingRoomRepository rep;
+
+        public HomeController(MeetingRoomRepository rep)
         {
             this.rep = rep;
         }

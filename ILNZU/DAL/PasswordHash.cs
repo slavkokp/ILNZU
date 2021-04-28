@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace BLL
+namespace DAL
 {
     using System.Security.Cryptography;
     using System.Text;

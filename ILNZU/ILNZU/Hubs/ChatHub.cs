@@ -6,7 +6,7 @@ namespace ILNZU
 {
     using System;
     using System.Threading.Tasks;
-    using DAL;
+    using BLL.Services;
     using DAL.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.SignalR;
@@ -17,15 +17,15 @@ namespace ILNZU
     [Authorize]
     public class ChatHub : Hub
     {
-        private DBRepository dbRepository;
+        private readonly MessageRepository rep;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatHub"/> class.
         /// </summary>
         /// <param name="dbRepository">database repository.</param>
-        public ChatHub(DBRepository dbRepository)
+        public ChatHub(MessageRepository rep)
         {
-            this.dbRepository = dbRepository;
+            this.rep = rep;
         }
 
         public async Task SetGroup(int meetingRoomId)
@@ -44,7 +44,7 @@ namespace ILNZU
             message.DateTime = DateTime.Now;
             message.MeetingRoomId = meetingRoomId;
             message.UserId = Convert.ToInt32(this.Context.UserIdentifier);
-            this.dbRepository.CreateMessage(message);
+            await this.rep.CreateMessage(message);
             await this.Clients.Group(meetingRoomId.ToString()).SendAsync("Receive", message, this.Context.User.Identity.Name, meetingRoomId);
 
             // await this.Clients.Users(userIds.ConvertAll(x => x.ToString())).SendAsync("Receive", message, this.Context.User.Identity.Name, meetingRoomId);

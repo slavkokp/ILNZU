@@ -12,6 +12,7 @@ namespace ILNZU
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using BLL.Services;
 
     /// <summary>
     /// Startup class.
@@ -40,7 +41,11 @@ namespace ILNZU
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddTransient<DBRepository>();
+            services.AddTransient<UserRepository>();
+            services.AddTransient<MeetingRoomRepository>();
+            services.AddTransient<MessageRepository>();
+
+            // services.AddTransient<DBRepository>();
 
             // services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
             services.AddDbContext<ILNZU_dbContext>();
