@@ -107,12 +107,57 @@ namespace DAL
         /// <param name="title">Room title.</param>
         /// <param name="userId">Creator id.</param>
         /// <returns>Nothing.</returns>
-        public static async Task CreateRoom(string title, int userId)
+        public static async Task<MeetingRoom> CreateRoom(string title, int userId)
         {
             using (var db = new ILNZU_dbContext())
             {
                 MeetingRoom room = new MeetingRoom { Title = title, UserId = userId };
                 db.Add(room);
+                await db.SaveChangesAsync();
+                return room;
+            }
+        }
+
+        public static async Task DeleteRoom(int meetingId)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                var room = db.MeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId);
+                db.Remove(room);
+                await db.SaveChangesAsync();
+            }
+        }
+
+        public static async Task<bool> CheckIfUserIsCreatorOfMeetingRoom(int userId, int meetingId)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                var chat = db.MeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId);
+                if(chat.Result.UserId == userId)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        public static async Task AddUserToMeeting(int userId, int meetingId)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                UserMemberOfMeetingRoom relation = new UserMemberOfMeetingRoom { MeetingRoomId = meetingId, UserId = userId };
+                db.Add(relation);
+                await db.SaveChangesAsync();
+            }
+        }
+
+
+        public static async Task RemoveUserFromMeeting(int userId, int meetingId)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                var relation = db.UserMemberOfMeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId && u.UserId == userId);
+                db.Remove(relation);
                 await db.SaveChangesAsync();
             }
         }

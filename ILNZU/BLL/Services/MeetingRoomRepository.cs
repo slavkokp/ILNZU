@@ -10,9 +10,14 @@ namespace BLL.Services
 {
     public class MeetingRoomRepository
     {
-        public async Task CreateRoom(string title, int userId)
+        public async Task<MeetingRoom> CreateRoom(string title, int userId)
         {
-            await DBRepository.CreateRoom(title, userId);
+            return await DBRepository.CreateRoom(title, userId);
+        }
+
+        public async Task DeleteRoom(int id)
+        {
+            await DBRepository.DeleteRoom(id);
         }
 
         public async Task<List<int>> GetMeetings(int userId)
@@ -29,5 +34,20 @@ namespace BLL.Services
         {
             return await DBRepository.GetMeetingRooms(userId);
         }
+
+        public async Task<bool> CheckIfUserIsCreatorOfMeetingRoom(int userId, int meetingRoomId)
+        {
+            return await DBRepository.CheckIfUserIsCreatorOfMeetingRoom(userId, meetingRoomId);
+        }
+
+        public async Task AddUserToMeeting(int userId, int meetingRoomId)
+        {
+            await DBRepository.AddUserToMeeting(userId, meetingRoomId);
+        }
+        public async Task RemoveUserFromMeeting(int userId, int meetingRoomId)
+        {
+            await DBRepository.RemoveUserFromMeeting(userId, meetingRoomId);
+        }
+
     }
 }
