@@ -5,6 +5,7 @@
 namespace ILNZU.Controllers
 {
     using System;
+    using System.IO;
     using System.Collections.Generic;
     using System.Linq;
     using System.Security.Claims;
@@ -13,6 +14,8 @@ namespace ILNZU.Controllers
     using DAL.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Hosting;
 
     /// <summary>
     /// MeetingController class.
@@ -21,16 +24,20 @@ namespace ILNZU.Controllers
     {
         private readonly UserRepository userRep;
         private readonly MessageRepository messageRep;
+        private readonly AttachmentRepository attachRep;
+        private readonly IWebHostEnvironment appEnvironment;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MeetingController"/> class.
         /// </summary>
         /// <param name="userRep">UserRepository service.</param>
         /// <param name="messageRep">MessageRepository service.</param>
-        public MeetingController(UserRepository userRep, MessageRepository messageRep)
+        public MeetingController(UserRepository userRep, MessageRepository messageRep, AttachmentRepository attachRep, IWebHostEnvironment appEnvironment)
         {
             this.userRep = userRep;
             this.messageRep = messageRep;
+            this.appEnvironment = appEnvironment;
+            this.attachRep = attachRep;
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿@using DAL.Models
+@using Microsoft.AspNetCore.Http;
 @model List<Message>
 
 <div id="header"></div>
@@ -23,25 +24,26 @@
     </div>
 </div>
 
-<br/>
+<br />
 
 <div class="col-md-4 offset-md-4">
     <div class="message-input">
         <div id="inputForm">
             <input type="text" id="message" placeholder="Type a message" />
             <input type="button" id="sendBtn" value="Send" />
+            <input type="file" id="attachment" value="upload" />
         </div>
     </div>
 </div>
 
 
-    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
-    <script>
+<script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+<script>
     const hubConnection = new signalR.HubConnectionBuilder()
         .withUrl("/chat")
         .build();
 
-    hubConnection.on("Receive", function (message, userName, meetingRoomId) {
+    hubConnection.on("Receive", function (message, userName) {
 
         let time = new Date(message.datetime);
 
@@ -57,10 +59,11 @@
 
     document.getElementById("sendBtn").addEventListener("click", function (e) {
         let text = document.getElementById("message").value;
-        hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId);
+        let file = document.getElementById("attachment").files[0];
+        hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId, file);
     });
 
         hubConnection.start().then(function () {
             hubConnection.invoke("SetGroup", @ViewBag.MeetingRoomId);
         });
-    </script>
+</script>

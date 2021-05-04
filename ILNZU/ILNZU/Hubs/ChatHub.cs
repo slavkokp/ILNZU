@@ -5,11 +5,14 @@
 namespace ILNZU
 {
     using System;
+    using System.IO;
     using System.Threading.Tasks;
     using BLL.Services;
     using DAL.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.SignalR;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
 
     /// <summary>
     /// ChatHub class.
@@ -17,15 +20,19 @@ namespace ILNZU
     [Authorize]
     public class ChatHub : Hub
     {
-        private readonly MessageRepository rep;
+        private readonly MessageRepository msgRep;
+        private readonly AttachmentRepository attachRep;
+        private readonly IWebHostEnvironment appEnvironment;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatHub"/> class.
         /// </summary>
         /// <param name="dbRepository">database repository.</param>
-        public ChatHub(MessageRepository rep)
+        public ChatHub(MessageRepository msgRep, AttachmentRepository attachRep, IWebHostEnvironment appEnvironment)
         {
-            this.rep = rep;
+            this.msgRep = msgRep;
+            this.attachRep = attachRep;
+            this.appEnvironment = appEnvironment;
         }
 
         public async Task SetGroup(int meetingRoomId)
@@ -39,13 +46,27 @@ namespace ILNZU
         /// <param name="message">User message.</param>
         /// <param name="meetingRoomId">Meeting room id.</param>
         /// <returns>A task.</returns>
-        public async Task Send(Message message, int meetingRoomId)
+        public async Task Send(Message message, int meetingRoomId, IFormFile file)
         {
+            if (file != null)
+            {
+                Attachment attachment = new Attachment();
+                attachment.FileName = file.FileName;
+                attachment.Path = "/Files/" + meetingRoomId.ToString() + "/" + DateTime.Now.ToString(@"hh\_mm\_ss") + file.FileName;
+                using (var fileStream = new FileStream(this.appEnvironment.WebRootPath + attachment.Path, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+
+                int attachmentId = await this.attachRep.AddAttachment(attachment);
+                message.AttachmentId = attachmentId;
+            }
+
             message.DateTime = DateTime.Now;
             message.MeetingRoomId = meetingRoomId;
             message.UserId = Convert.ToInt32(this.Context.UserIdentifier);
-            await this.rep.CreateMessage(message);
-            await this.Clients.Group(meetingRoomId.ToString()).SendAsync("Receive", message, this.Context.User.Identity.Name, meetingRoomId);
+            await this.msgRep.CreateMessage(message);
+            await this.Clients.Group(meetingRoomId.ToString()).SendAsync("Receive", message, this.Context.User.Identity.Name);
 
             // await this.Clients.Users(userIds.ConvertAll(x => x.ToString())).SendAsync("Receive", message, this.Context.User.Identity.Name, meetingRoomId);
         }

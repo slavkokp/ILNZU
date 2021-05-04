@@ -44,6 +44,8 @@ namespace DAL.Data
         /// </summary>
         public DbSet<UserMemberOfMeetingRoom> UserMemberOfMeetingRoom { get; set; }
 
+        public DbSet<Attachment> Attachment { get; set; }
+
         /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

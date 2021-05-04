@@ -191,5 +191,15 @@ namespace DAL
                                              select new Tuple<int, string>(meetings.MeetingRoomId, meetings.Title)).ToList());
             }
         }
+
+        public static async Task<int> AddAttachment(Attachment attachment)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                db.Attachment.Add(attachment);
+                await db.SaveChangesAsync();
+                return attachment.AttachmentId;
+            }
+        }
     }
 }
