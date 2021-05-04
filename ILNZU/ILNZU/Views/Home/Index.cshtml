@@ -10,20 +10,17 @@
                 <h1 class="display-4">ILNZU</h1>
             </div>
 
-            <div class="d-flex justify-content-center">
-                <h2>Chat list</h2>
-            </div>
-
-            @foreach (var tuple in ViewBag.MeetingRooms)
-            {
-                <p>
-                    <a href=@("https://localhost:44391/meeting/room/" + tuple.Item1.ToString())>@tuple.Item2</a>
-                </p>
-            }
-            @* To do: Select user's chat rooms *@
-            <div class="col d-flex justify-content-center">
-                <p>User's chat room in progress</p>
-            </div>
         </div>
+    </div>
+    <div class="d-flex flex-column">
+        <h2>Chat list</h2>
+        @foreach (var tuple in ViewBag.MeetingRooms)
+        {
+            <p>
+                <div class="p-2">
+                    <a href=@("https://localhost:44391/meeting/room/" + tuple.Item1.ToString())>@tuple.Item2</a>
+                </div>
+            </p>
+        }
     </div>
 </div>
