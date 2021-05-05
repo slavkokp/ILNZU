@@ -143,13 +143,8 @@ namespace DAL
         {
             using (var db = new ILNZU_dbContext())
             {
-<<<<<<< HEAD
-                var chat = db.MeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId);
-                if (chat.Result.UserId == userId)
-=======
                 var chat = await db.MeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId);
-                if(chat.UserId == userId)
->>>>>>> 88138f55ceaa173d1c91d9a1e4eb2970d9713585
+                if (chat.UserId == userId)
                 {
                     return true;
                 }
