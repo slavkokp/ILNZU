@@ -65,6 +65,23 @@ namespace ILNZU.Controllers
             return this.View("Error"); // todo : change error view to page not found
         }
 
+        [Authorize]
+        [HttpPost]
+        public async void CreateAttachment(IFormFile file)
+        {
+
+            Attachment attachment = new Attachment();
+            attachment.FileName = file.FileName;
+            attachment.Path = "/Files/" + DateTime.Now.ToString(@"hh\_mm\_ss") + file.FileName;
+            using (var fileStream = new FileStream(this.appEnvironment.WebRootPath + attachment.Path, FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+
+            int id = await this.attachRep.AddAttachment(attachment);
+            this.ViewBag.AttachmentId = id;
+        }
+
         // [Authorize]
         // public async Task<IActionResult> CreateRoom(RoomModel model)
         // {

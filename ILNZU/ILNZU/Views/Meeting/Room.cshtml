@@ -25,16 +25,18 @@
 </div>
 
 <br />
-
-<div class="col-md-4 offset-md-4">
-    <div class="message-input">
-        <div id="inputForm">
-            <input type="text" id="message" placeholder="Type a message" />
-            <input type="button" id="sendBtn" value="Send" />
-            <input type="file" id="attachment" value="upload" />
+<form enctype="multipart/form-data">
+    <div class="col-md-4 offset-md-4">
+        <div class="message-input">
+            <div id="inputForm">
+                <input type="text" id="message" placeholder="Type a message" />
+                <input type="button" id="sendBtn" value="Send" />
+                <input type="file" id="attachment" value="upload" />
+            </div>
         </div>
     </div>
-</div>
+</form>
+
 
 
 <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
@@ -57,13 +59,43 @@
         document.getElementById("chatroom").appendChild(elem);
     });
 
+    function uploadFiles(file) {
+        var formData = new FormData();
+        formData.append("file", file)
+
+        $.ajax(
+            {
+                url: '@Url.Action("CreateAttachment", "Meeting")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                type: "POST",
+                success: function (data) {
+                    alert("Files Uploaded!");
+                }
+            }
+        );
+    }
+
     document.getElementById("sendBtn").addEventListener("click", function (e) {
         let text = document.getElementById("message").value;
-        let file = document.getElementById("attachment").files[0];
-        hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId, file);
+        let input = document.getElementById("attachment")
+        let file = input.files[0];
+        if (file != null) {
+            input.value = null
+            uploadFiles(file);
+            alert("@ViewBag.MeetingRoomId")
+            alert("@ViewBag.AttachmentId")
+            alert(text)
+            hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId, @ViewBag.AttachmentId);
+        }
+        @*else {
+            hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId, null);
+        }*@
+
     });
 
-        hubConnection.start().then(function () {
-            hubConnection.invoke("SetGroup", @ViewBag.MeetingRoomId);
-        });
+    hubConnection.start().then(function () {
+        hubConnection.invoke("SetGroup", @ViewBag.MeetingRoomId);
+    });
 </script>
