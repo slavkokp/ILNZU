@@ -22,12 +22,17 @@ namespace ILNZU
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatHub"/> class.
         /// </summary>
-        /// <param name="dbRepository">database repository.</param>
+        /// <param name="rep">Message repository.</param>
         public ChatHub(MessageRepository rep)
         {
-            this.rep = rep;
+            this.rep = rep ?? throw new ArgumentNullException(nameof(rep));
         }
 
+        /// <summary>
+        /// Sets group.
+        /// </summary>
+        /// <param name="meetingRoomId">Meeting room id.</param>
+        /// <returns>Nothing.</returns>
         public async Task SetGroup(int meetingRoomId)
         {
             await this.Groups.AddToGroupAsync(this.Context.ConnectionId, meetingRoomId.ToString());

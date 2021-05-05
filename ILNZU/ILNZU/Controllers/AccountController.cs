@@ -1,65 +1,91 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using ILNZU.ViewModels;
-using DAL.Models;
-using DAL.Data;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Cryptography;
-using System.Text;
-using BLL.Services;
-using System;
+﻿// <copyright file="AccountController.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace ILNZU.Controllers
 {
+    using System.Collections.Generic;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
+    using BLL.Services;
+    using DAL.Models;
+    using ILNZU.ViewModels;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+
+    /// <summary>
+    /// Account controller.
+    /// </summary>
     public class AccountController : Controller
     {
         private readonly UserRepository rep;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccountController"/> class.
+        /// </summary>
+        /// <param name="rep">User repository.</param>
         public AccountController(UserRepository rep)
         {
             this.rep = rep;
         }
 
+        /// <summary>
+        /// Shows login view.
+        /// </summary>
+        /// <returns>A login view.</returns>
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return this.View();
         }
 
+        /// <summary>
+        /// Logs in.
+        /// </summary>
+        /// <param name="model">login model.</param>
+        /// <returns>Login view.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
-                User user = rep.FindUser(model.Email).Result;
+                User user = this.rep.FindUser(model.Email).Result;
                 if (user != null)
                 {
-                    string SaltedPassword = model.Password + user.Salt;
-                    User ExistingUser = rep.FindUser(model.Email, SaltedPassword).Result;
-                    if (ExistingUser != null)
+                    string saltedPassword = model.Password + user.Salt;
+                    User existingUser = this.rep.FindUser(model.Email, saltedPassword).Result;
+                    if (existingUser != null)
                     {
-                        await Authenticate(model.Email, ExistingUser.Id, ExistingUser.Name);
+                        await this.Authenticate(model.Email, existingUser.Id, existingUser.Name);
 
-                        return RedirectToAction("Index", "Home");
+                        return this.RedirectToAction("Index", "Home");
                     }
                 }
-                ModelState.AddModelError("", "Wrong login or password");
+
+                this.ModelState.AddModelError(string.Empty, "Wrong login or password");
             }
-            return View(model);
+
+            return this.View(model);
         }
 
+        /// <summary>
+        /// Shows refister view.
+        /// </summary>
+        /// <returns>returns register view.</returns>
         [HttpGet]
         public IActionResult Register()
         {
-            return View();
+            return this.View();
         }
 
-
+        /// <summary>
+        /// Registers new user.
+        /// </summary>
+        /// <param name="model">Register model.</param>
+        /// <returns>A view.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
@@ -68,43 +94,48 @@ namespace ILNZU.Controllers
             {
                 try
                 {
-                    int userId = rep.AddUser(model.Email, model.Password, model.Name, model.Surname, model.Username).Result;
+                    int userId = this.rep.AddUser(model.Email, model.Password, model.Name, model.Surname, model.Username).Result;
 
-                    await Authenticate(model.Email, userId, model.Name);
+                    await this.Authenticate(model.Email, userId, model.Name);
 
-                    return RedirectToAction("Index", "Home");
+                    return this.RedirectToAction("Index", "Home");
                 }
-                catch(DbUpdateException e)
+                catch (DbUpdateException e)
                 {
                     if (e.InnerException.Message.Split(":")[0] == "23505")
                     {
-                        ModelState.AddModelError("", "Email already taken");
+                        this.ModelState.AddModelError(string.Empty, "Email already taken");
                     }
                     else
                     {
-                        ModelState.AddModelError("", e.InnerException.Message);
+                        this.ModelState.AddModelError(string.Empty, e.InnerException.Message);
                     }
                 }
             }
-            return View(model);
+
+            return this.View(model);
         }
 
-        private async Task Authenticate(string Email, int UserId, string Name)
+        /// <summary>
+        /// Logs out from the current account.
+        /// </summary>
+        /// <returns>A login view.</returns>
+        public async Task<IActionResult> Logout()
+        {
+            await this.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return this.RedirectToAction("Login", "Account");
+        }
+
+        private async Task Authenticate(string email, int userId, string name)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, Name),
-                new Claim(ClaimTypes.NameIdentifier, UserId.ToString()),
-                new Claim(ClaimTypes.Email, Email)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, name),
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                new Claim(ClaimTypes.Email, email),
             };
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
-        }
-
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
+            await this.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
     }
 }

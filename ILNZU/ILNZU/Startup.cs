@@ -4,6 +4,7 @@
 
 namespace ILNZU
 {
+    using BLL.Services;
     using DAL;
     using DAL.Data;
     using Microsoft.AspNetCore.Authentication.Cookies;
@@ -12,7 +13,6 @@ namespace ILNZU
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using BLL.Services;
 
     /// <summary>
     /// Startup class.

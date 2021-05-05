@@ -118,6 +118,11 @@ namespace DAL
             }
         }
 
+        /// <summary>
+        /// Deletes room.
+        /// </summary>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>Nothing.</returns>
         public static async Task DeleteRoom(int meetingId)
         {
             using (var db = new ILNZU_dbContext())
@@ -128,19 +133,32 @@ namespace DAL
             }
         }
 
+        /// <summary>
+        /// Checks if user is creator of meeting room.
+        /// </summary>
+        /// <param name="userId">Users id.</param>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>If user is creator of meeting room.</returns>
         public static async Task<bool> CheckIfUserIsCreatorOfMeetingRoom(int userId, int meetingId)
         {
             using (var db = new ILNZU_dbContext())
             {
                 var chat = db.MeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId);
-                if(chat.Result.UserId == userId)
+                if (chat.Result.UserId == userId)
                 {
                     return true;
                 }
+
                 return false;
             }
         }
 
+        /// <summary>
+        /// Adds a user to meeting.
+        /// </summary>
+        /// <param name="userId">User id.</param>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>Nothing.</returns>
         public static async Task AddUserToMeeting(int userId, int meetingId)
         {
             using (var db = new ILNZU_dbContext())
@@ -151,7 +169,12 @@ namespace DAL
             }
         }
 
-
+        /// <summary>
+        /// REmoves user froom meeting room.
+        /// </summary>
+        /// <param name="userId">User id.</param>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>Nothing.</returns>
         public static async Task RemoveUserFromMeeting(int userId, int meetingId)
         {
             using (var db = new ILNZU_dbContext())
