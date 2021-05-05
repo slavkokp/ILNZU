@@ -127,7 +127,7 @@ namespace DAL
         {
             using (var db = new ILNZU_dbContext())
             {
-                var room = db.MeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId);
+                var room = await db.MeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId);
                 db.Remove(room);
                 await db.SaveChangesAsync();
             }
@@ -143,8 +143,13 @@ namespace DAL
         {
             using (var db = new ILNZU_dbContext())
             {
+<<<<<<< HEAD
                 var chat = db.MeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId);
                 if (chat.Result.UserId == userId)
+=======
+                var chat = await db.MeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId);
+                if(chat.UserId == userId)
+>>>>>>> 88138f55ceaa173d1c91d9a1e4eb2970d9713585
                 {
                     return true;
                 }
@@ -179,7 +184,7 @@ namespace DAL
         {
             using (var db = new ILNZU_dbContext())
             {
-                var relation = db.UserMemberOfMeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId && u.UserId == userId);
+                var relation = await db.UserMemberOfMeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId && u.UserId == userId);
                 db.Remove(relation);
                 await db.SaveChangesAsync();
             }

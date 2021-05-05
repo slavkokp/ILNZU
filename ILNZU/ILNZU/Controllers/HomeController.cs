@@ -38,7 +38,6 @@ namespace ILNZU.Controllers
         public async Task<IActionResult> Index()
         {
             this.ViewBag.MeetingRooms = await this.rep.GetMeetingRooms(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
-            var res = await this.rep.GetMeetingRooms(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
             return this.View("Index", this.User.Identity.Name);
         }
 
@@ -60,8 +59,8 @@ namespace ILNZU.Controllers
         [Authorize]
         public async Task<IActionResult> CreateMeeting(RoomModel model)
         {
-            var room = this.rep.CreateRoom(model.Title, Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value)).Result;
-            rep.AddUserToMeeting(Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value), room.MeetingRoomId);
+            var room = await this.rep.CreateRoom(model.Title, Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            await this.rep.AddUserToMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), room.MeetingRoomId);
             return this.View();
         }
 
@@ -73,13 +72,14 @@ namespace ILNZU.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteMeeting(int meetingId)
         {
-            if (this.rep.CheckIfUserIsCreatorOfMeetingRoom(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), meetingId).Result)
+            bool isCreatorOfMeeting = await this.rep.CheckIfUserIsCreatorOfMeetingRoom(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), meetingId);
+            if (isCreatorOfMeeting)
             {
-                rep.DeleteRoom(meetingId);
+                await this.rep.DeleteRoom(meetingId);
             }
             else
             {
-                rep.RemoveUserFromMeeting(Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value), meetingId);
+                await this.rep.RemoveUserFromMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), meetingId);
             }
 
             return this.View();
@@ -94,8 +94,8 @@ namespace ILNZU.Controllers
         [Authorize]
         public async Task<IActionResult> Kick(int userId, int meetingId)
         {
-            rep.RemoveUserFromMeeting(userId, meetingId);
-            return View();
+            await this.rep.RemoveUserFromMeeting(userId, meetingId);
+            return this.View();
         }
 
         /// <summary>
