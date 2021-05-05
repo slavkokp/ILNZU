@@ -93,6 +93,12 @@ for details on configuring this project to bundle and minify static web assets. 
     overflow: auto;
 }
 
+.button-to-bot {
+    position: absolute;
+    top: 95vh;
+    transform: translateY(-100%);
+    width: 100%;
+}
 
 /* Provide sufficient contrast against white background */
 a {
