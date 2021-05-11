@@ -61,7 +61,8 @@ namespace ILNZU.Controllers
         {
             var room = await this.rep.CreateRoom(model.Title, Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
             await this.rep.AddUserToMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), room.MeetingRoomId);
-            return this.View();
+            //return this.View();
+            return RedirectToAction("Index");
         }
 
         /// <summary>
@@ -82,7 +83,8 @@ namespace ILNZU.Controllers
                 await this.rep.RemoveUserFromMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), meetingId);
             }
 
-            return this.View();
+            //return this.View();
+            return RedirectToAction("Index");
         }
 
         /// <summary>
