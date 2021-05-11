@@ -13,6 +13,7 @@ namespace ILNZU
     using Microsoft.AspNetCore.SignalR;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
+    using System.Security.Claims;
 
     /// <summary>
     /// ChatHub class.
@@ -48,27 +49,12 @@ namespace ILNZU
         /// <returns>A task.</returns>
         public async Task Send(Message message, int meetingRoomId, int? attachmentId)
         {
-            //if (file != null)
-            //{
-            //    Attachment attachment = new Attachment();
-            //    attachment.FileName = file.FileName;
-            //    attachment.Path = "/Files/" + meetingRoomId.ToString() + "/" + DateTime.Now.ToString(@"hh\_mm\_ss") + file.FileName;
-            //    using (var fileStream = new FileStream(this.appEnvironment.WebRootPath + attachment.Path, FileMode.Create))
-            //    {
-            //        await file.CopyToAsync(fileStream);
-            //    }
-
-            //    int attachmentId = await this.attachRep.AddAttachment(attachment);
-            //    message.AttachmentId = attachmentId;
-            //}
             message.AttachmentId = attachmentId;
             message.DateTime = DateTime.Now;
             message.MeetingRoomId = meetingRoomId;
             message.UserId = Convert.ToInt32(this.Context.UserIdentifier);
             await this.msgRep.CreateMessage(message);
             await this.Clients.Group(meetingRoomId.ToString()).SendAsync("Receive", message, this.Context.User.Identity.Name);
-
-            // await this.Clients.Users(userIds.ConvertAll(x => x.ToString())).SendAsync("Receive", message, this.Context.User.Identity.Name, meetingRoomId);
         }
     }
 }

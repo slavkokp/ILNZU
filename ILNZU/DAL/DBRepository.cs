@@ -201,5 +201,13 @@ namespace DAL
                 return attachment.AttachmentId;
             }
         }
+
+        public static async Task<Attachment> FindAttachment(int attachmentId)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                return await db.Attachment.FirstOrDefaultAsync(a => a.AttachmentId == attachmentId);
+            }
+        }
     }
 }

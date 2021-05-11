@@ -17,6 +17,13 @@
                             <b>@sender</b>
                             @msg.Text
                         </p>
+                        if (msg.AttachmentId != null)
+                        {
+                            <form asp-action="Download" asp-controller="Attachment">
+                                <input type="submit" value="@ViewBag.attachments[msg.AttachmentId.Value].FileName" class="btn btn-outline-dark"/>
+                                <input type="hidden" value="@ViewBag.attachments[msg.AttachmentId.Value].Path" name="filePath">
+                            </form>
+                        }
                     }
                 </div>
             </div>
@@ -25,17 +32,17 @@
 </div>
 
 <br />
-<form enctype="multipart/form-data">
-    <div class="col-md-4 offset-md-4">
-        <div class="message-input">
-            <div id="inputForm">
-                <input type="text" id="message" placeholder="Type a message" />
-                <input type="button" id="sendBtn" value="Send" />
-                <input type="file" id="attachment" value="upload" />
-            </div>
+
+<div class="col-md-4 offset-md-4">
+    <div class="message-input">
+        <div id="inputForm">
+            <input type="text" id="message" placeholder="Type a message" />
+            <input type="button" id="sendBtn" value="SendMsg" />
+            <input type="file" id="attachment" value="upload" />
         </div>
     </div>
-</form>
+</div>
+
 
 
 
@@ -59,19 +66,18 @@
         document.getElementById("chatroom").appendChild(elem);
     });
 
-    function uploadFiles(file) {
+    function uploadFiles(file, text) {
         var formData = new FormData();
-        formData.append("file", file)
-
+        formData.append("file", file);
         $.ajax(
             {
-                url: '@Url.Action("CreateAttachment", "Meeting")',
+                url: '@Url.Action("CreateAttachment", "Attachment")',
                 data: formData,
                 processData: false,
                 contentType: false,
                 type: "POST",
-                success: function (data) {
-                    alert("Files Uploaded!");
+                success: function (Id) {
+                    hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId, Id);
                 }
             }
         );
@@ -83,15 +89,13 @@
         let file = input.files[0];
         if (file != null) {
             input.value = null
-            uploadFiles(file);
-            alert("@ViewBag.MeetingRoomId")
-            alert("@ViewBag.AttachmentId")
-            alert(text)
-            hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId, @ViewBag.AttachmentId);
+            uploadFiles(file, text);
         }
-        @*else {
-            hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId, null);
-        }*@
+        else {
+            if (text != "") {
+                hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId, null);
+            }
+        }
 
     });
 

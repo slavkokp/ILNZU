@@ -14,5 +14,10 @@ namespace BLL.Services
         {
             return await DBRepository.AddAttachment(attachment);
         }
+
+        public async Task<Attachment> FindAttachment(int attachmentId)
+        {
+            return await DBRepository.FindAttachment(attachmentId);
+        }
     }
 }
