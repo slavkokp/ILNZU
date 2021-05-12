@@ -23,15 +23,21 @@
             <h2>Chat list</h2>
             @foreach (var tuple in ViewBag.MeetingRooms)
             {
-                <p>
-                    <div class="p-2">
-                        <a href=@("https://localhost:44391/meeting/room/" + tuple.Item1.ToString())>@tuple.Item2</a>
-                    </div>
-                    <form asp-action="DeleteMeeting" asp-controller="Home">
-                        <input type="hidden" name="meetingId" value=@tuple.Item1.ToString()>
-                        <input type="submit" value="Delete" />
-                    </form>
-                </p>
+            <p>
+                <div class="p-2">
+                    <a href=@("https://localhost:44391/meeting/room/" + tuple.Item1.ToString())>@tuple.Item2</a>
+                </div>
+
+                <form >
+                    <input type="text" placeholder="User email" />
+                    <input type="submit" value="Invite" />
+                </form>
+
+                <form asp-action="DeleteMeeting" asp-controller="Home">
+                    <input type="hidden" name="meetingId" value=@tuple.Item1.ToString()>
+                    <input type="submit" value="Delete" />
+                </form>
+            </p>
             }
         </div>
     </div>
