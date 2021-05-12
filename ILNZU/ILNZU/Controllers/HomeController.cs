@@ -117,6 +117,7 @@ namespace ILNZU.Controllers
             User u = this.userRepository.FindUser(email).Result;
             await this.inviteRepository.RemoveInvite(u.Id, meetingId);
             await this.inviteRepository.AddInvite(u.Id, meetingId);
+            this.ViewBag.Invites = await this.inviteRepository.GetInvites(u.Id);
             return this.RedirectToAction("Index");
         }
 
@@ -130,20 +131,10 @@ namespace ILNZU.Controllers
         public async Task<IActionResult> RemoveInvite(int userId, int meetingId)
         {
             await this.inviteRepository.RemoveInvite(userId, meetingId);
-            return this.View();
-        }
-
-        /// <summary>
-        /// Gets invites.
-        /// </summary>
-        /// <param name="userId">User id.</param>
-        /// <returns>Web page.</returns>
-        [Authorize]
-        public async Task<IActionResult> GetInvites(int userId)
-        {
             this.ViewBag.Invites = await this.inviteRepository.GetInvites(userId);
             return this.View();
         }
+
 
         /// <summary>
         /// Gets meeting title.
