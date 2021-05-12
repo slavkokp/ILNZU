@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "My invites";
+}
+
+<div class="container">
+    <div class="chat-frame">
+        <div class="d-flex flex-column">
+            <h2>Chat list</h2>
+            @foreach (var tuple in ViewBag.Invites)
+            {
+                <p>
+                    <div class="p-2">
+                        <p>@tuple.Item2</p>
+                    </div>
+
+                </p>
+            }
+        </div>
+    </div>
+</div>
