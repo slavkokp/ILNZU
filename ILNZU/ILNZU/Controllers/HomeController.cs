@@ -60,7 +60,7 @@ namespace ILNZU.Controllers
             this.ViewBag.Invites = from invite in invites
                                     select new Tuple<int, Tuple<string, DateTime>>(
                                     invite.MeetingRoomId,
-                                    new Tuple<string, DateTime>(this.meetingRoomRepository.GetMeetingTitle(invite.MeetingRoomId).Result, invite.DateTime));
+                                    new Tuple<string, DateTime>(this.meetingRoomRepository.GetMeetingTitle(invite.InviteId).Result, invite.DateTime));
             return this.View("Invite", this.User.Identity.Name);
         }
 
@@ -134,7 +134,6 @@ namespace ILNZU.Controllers
             User u = this.userRepository.FindUser(email).Result;
             if (u != null)
             {
-                await this.inviteRepository.RemoveInvite(u.Id, meetingId);
                 await this.inviteRepository.AddInvite(u.Id, meetingId);
             }
 
