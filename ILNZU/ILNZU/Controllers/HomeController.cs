@@ -59,8 +59,8 @@ namespace ILNZU.Controllers
             var invites = await this.inviteRepository.GetInvites(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
             this.ViewBag.Invites = from invite in invites
                                     select new Tuple<int, Tuple<string, DateTime>>(
-                                    invite.MeetingRoomId,
-                                    new Tuple<string, DateTime>(this.meetingRoomRepository.GetMeetingTitle(invite.InviteId).Result, invite.DateTime));
+                                    invite.InviteId,
+                                    new Tuple<string, DateTime>(this.meetingRoomRepository.GetMeetingTitle(invite.MeetingRoomId).Result, invite.DateTime));
             return this.View("Invite", this.User.Identity.Name);
         }
 
