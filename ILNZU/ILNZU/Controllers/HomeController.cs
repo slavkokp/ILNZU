@@ -117,8 +117,12 @@ namespace ILNZU.Controllers
         public async Task<IActionResult> CreateInvite(string email, int meetingId)
         {
             User u = this.userRepository.FindUser(email).Result;
-            await this.inviteRepository.RemoveInvite(u.Id, meetingId);
-            await this.inviteRepository.AddInvite(u.Id, meetingId);
+            if (u != null)
+            {
+                await this.inviteRepository.RemoveInvite(u.Id, meetingId);
+                await this.inviteRepository.AddInvite(u.Id, meetingId);
+            }
+
             return this.RedirectToAction("Index");
         }
 
