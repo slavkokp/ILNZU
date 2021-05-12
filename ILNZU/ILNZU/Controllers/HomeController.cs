@@ -43,6 +43,7 @@ namespace ILNZU.Controllers
         public async Task<IActionResult> Index()
         {
             this.ViewBag.MeetingRooms = await this.meetingRoomRepository.GetMeetingRooms(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            this.ViewBag.Invites = await this.inviteRepository.GetInvites(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
             return this.View("Index", this.User.Identity.Name);
         }
 
@@ -66,7 +67,6 @@ namespace ILNZU.Controllers
         {
             var room = await this.meetingRoomRepository.CreateRoom(model.Title, Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
             await this.meetingRoomRepository.AddUserToMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), room.MeetingRoomId);
-            this.ViewBag.Meetings = this.meetingRoomRepository.GetMeetingRooms(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value)).Result;
 
             return this.RedirectToAction("Index");
         }
@@ -117,7 +117,6 @@ namespace ILNZU.Controllers
             User u = this.userRepository.FindUser(email).Result;
             await this.inviteRepository.RemoveInvite(u.Id, meetingId);
             await this.inviteRepository.AddInvite(u.Id, meetingId);
-            this.ViewBag.Invites = await this.inviteRepository.GetInvites(u.Id);
             return this.RedirectToAction("Index");
         }
 
@@ -131,7 +130,6 @@ namespace ILNZU.Controllers
         public async Task<IActionResult> RemoveInvite(int userId, int meetingId)
         {
             await this.inviteRepository.RemoveInvite(userId, meetingId);
-            this.ViewBag.Invites = await this.inviteRepository.GetInvites(userId);
             return this.View();
         }
 
