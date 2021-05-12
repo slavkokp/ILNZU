@@ -66,7 +66,7 @@ namespace ILNZU.Controllers
             await this.meetingRoomRepository.AddUserToMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), room.MeetingRoomId);
             this.ViewBag.Meetings = this.meetingRoomRepository.GetMeetingRooms(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value)).Result;
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction("Index");
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace ILNZU.Controllers
                 await this.meetingRoomRepository.RemoveUserFromMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), meetingId);
             }
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction("Index");
         }
 
         /// <summary>
@@ -103,6 +103,12 @@ namespace ILNZU.Controllers
             return this.View();
         }
 
+        /// <summary>
+        /// Creates an invite.
+        /// </summary>
+        /// <param name="email">Email.</param>
+        /// <param name="meetingId">Meeing id.</param>
+        /// <returns>Web page.</returns>
         [Authorize]
         public async Task<IActionResult> CreateInvite(string email, int meetingId)
         {
@@ -111,6 +117,12 @@ namespace ILNZU.Controllers
             return this.View();
         }
 
+        /// <summary>
+        /// Removes invite.
+        /// </summary>
+        /// <param name="userId">User id.</param>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>Web page.</returns>
         [Authorize]
         public async Task<IActionResult> RemoveInvite(int userId, int meetingId)
         {
@@ -118,7 +130,11 @@ namespace ILNZU.Controllers
             return this.View();
         }
 
-
+        /// <summary>
+        /// Gets invites.
+        /// </summary>
+        /// <param name="userId">User id.</param>
+        /// <returns>Web page.</returns>
         [Authorize]
         public async Task<IActionResult> GetInvites(int userId)
         {
@@ -126,7 +142,11 @@ namespace ILNZU.Controllers
             return this.View();
         }
 
-
+        /// <summary>
+        /// Gets meeting title.
+        /// </summary>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>A view.</returns>
         [Authorize]
         public async Task<IActionResult> GetMeetingTitle(int meetingId)
         {
