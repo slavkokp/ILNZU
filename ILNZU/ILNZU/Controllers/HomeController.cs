@@ -27,10 +27,12 @@ namespace ILNZU.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeController"/> class.
         /// </summary>
-        /// <param name="rep">Meeting room repository.</param>
-        public HomeController(MeetingRoomRepository rep)
+        /// <param name="meetingRep">Meeting room repository.</param>
+        public HomeController(MeetingRoomRepository meetingRep, InviteRepository inviteRep, UserRepository userRep)
         {
-            this.meetingRoomRepository = rep;
+            this.meetingRoomRepository = meetingRep;
+            this.inviteRepository = inviteRep;
+            this.userRepository = userRep;
         }
 
         /// <summary>
@@ -114,7 +116,7 @@ namespace ILNZU.Controllers
         {
             User u = this.userRepository.FindUser(email).Result;
             await this.meetingRoomRepository.RemoveUserFromMeeting(u.Id, meetingId);
-            return this.View();
+            return this.RedirectToAction("Index");
         }
 
         /// <summary>

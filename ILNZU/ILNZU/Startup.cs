@@ -44,6 +44,7 @@ namespace ILNZU
             services.AddTransient<UserRepository>();
             services.AddTransient<MeetingRoomRepository>();
             services.AddTransient<MessageRepository>();
+            services.AddTransient<InviteRepository>();
 
             // services.AddTransient<DBRepository>();
 
