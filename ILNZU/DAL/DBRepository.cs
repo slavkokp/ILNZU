@@ -128,8 +128,11 @@ namespace DAL
             using (var db = new ILNZU_dbContext())
             {
                 var room = await db.MeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId);
-                db.Remove(room);
-                await db.SaveChangesAsync();
+                if (room != null)
+                {
+                    db.Remove(room);
+                    await db.SaveChangesAsync();
+                }
             }
         }
 
