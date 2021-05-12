@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Services
 {
-    class InviteRepository
+    public class InviteRepository
     {
         public async Task<List<Invite>> GetInvites(int userId)
         {
