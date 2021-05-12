@@ -355,5 +355,23 @@ namespace DAL
                 return await db.Invite.FirstOrDefaultAsync(i => i.InviteId == inviteId);
             }
         }
+
+        public static async Task<int> AddAttachment(Attachment attachment)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                db.Attachment.Add(attachment);
+                await db.SaveChangesAsync();
+                return attachment.AttachmentId;
+            }
+        }
+
+        public static async Task<Attachment> FindAttachment(int attachmentId)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                return await db.Attachment.FirstOrDefaultAsync(a => a.AttachmentId == attachmentId);
+            }
+        }
     }
 }

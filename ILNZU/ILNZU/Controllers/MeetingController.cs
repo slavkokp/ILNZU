@@ -5,6 +5,7 @@
 namespace ILNZU.Controllers
 {
     using System;
+    using System.IO;
     using System.Collections.Generic;
     using System.Linq;
     using System.Security.Claims;
@@ -13,6 +14,8 @@ namespace ILNZU.Controllers
     using DAL.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Hosting;
 
     /// <summary>
     /// MeetingController class.
@@ -21,16 +24,20 @@ namespace ILNZU.Controllers
     {
         private readonly UserRepository userRep;
         private readonly MessageRepository messageRep;
+        private readonly AttachmentRepository attachRep;
+        private readonly IWebHostEnvironment appEnvironment;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MeetingController"/> class.
         /// </summary>
         /// <param name="userRep">UserRepository service.</param>
         /// <param name="messageRep">MessageRepository service.</param>
-        public MeetingController(UserRepository userRep, MessageRepository messageRep)
+        public MeetingController(UserRepository userRep, MessageRepository messageRep, AttachmentRepository attachRep, IWebHostEnvironment appEnvironment)
         {
             this.userRep = userRep;
             this.messageRep = messageRep;
+            this.appEnvironment = appEnvironment;
+            this.attachRep = attachRep;
         }
 
         /// <summary>
@@ -47,14 +54,20 @@ namespace ILNZU.Controllers
                 this.ViewBag.MeetingRoomId = id;
                 List<Message> messages = await this.messageRep.GetMessages(Convert.ToInt32(id));
                 messages = messages.OrderBy(msg => msg.DateTime).ToList();
+                Dictionary<int, Attachment> attachments = new Dictionary<int, Attachment>();
                 foreach (var msg in messages)
                 {
                     msg.User = await this.userRep.FindUser(msg.UserId);
+                    if (msg.AttachmentId != null)
+                    {
+                        attachments.Add(msg.AttachmentId.Value, await this.attachRep.FindAttachment(msg.AttachmentId.Value));
+                    }
                 }
 
+                ViewBag.attachments = attachments;
                 return this.View(messages);
             }
-
+            
             return this.View("Error"); // todo : change error view to page not found
         }
 

@@ -5,11 +5,15 @@
 namespace ILNZU
 {
     using System;
+    using System.IO;
     using System.Threading.Tasks;
     using BLL.Services;
     using DAL.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.SignalR;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using System.Security.Claims;
 
     /// <summary>
     /// ChatHub class.
@@ -17,15 +21,19 @@ namespace ILNZU
     [Authorize]
     public class ChatHub : Hub
     {
-        private readonly MessageRepository rep;
+        private readonly MessageRepository msgRep;
+        private readonly AttachmentRepository attachRep;
+        private readonly IWebHostEnvironment appEnvironment;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatHub"/> class.
         /// </summary>
-        /// <param name="rep">Message repository.</param>
-        public ChatHub(MessageRepository rep)
+        /// <param name="dbRepository">database repository.</param>
+        public ChatHub(MessageRepository msgRep, AttachmentRepository attachRep, IWebHostEnvironment appEnvironment)
         {
-            this.rep = rep ?? throw new ArgumentNullException(nameof(rep));
+            this.msgRep = msgRep;
+            this.attachRep = attachRep;
+            this.appEnvironment = appEnvironment;
         }
 
         /// <summary>
@@ -44,15 +52,24 @@ namespace ILNZU
         /// <param name="message">User message.</param>
         /// <param name="meetingRoomId">Meeting room id.</param>
         /// <returns>A task.</returns>
-        public async Task Send(Message message, int meetingRoomId)
+        public async Task Send(Message message, int meetingRoomId, int? attachmentId)
         {
+            message.AttachmentId = attachmentId;
             message.DateTime = DateTime.Now;
             message.MeetingRoomId = meetingRoomId;
             message.UserId = Convert.ToInt32(this.Context.UserIdentifier);
-            await this.rep.CreateMessage(message);
-            await this.Clients.Group(meetingRoomId.ToString()).SendAsync("Receive", message, this.Context.User.Identity.Name, meetingRoomId);
-
-            // await this.Clients.Users(userIds.ConvertAll(x => x.ToString())).SendAsync("Receive", message, this.Context.User.Identity.Name, meetingRoomId);
+            await this.msgRep.CreateMessage(message);
+            if (attachmentId.HasValue)
+            {
+                var attachment = await this.attachRep.FindAttachment(attachmentId.Value);
+                await this.Clients.Group(meetingRoomId.ToString()).SendAsync("Receive", message, this.Context.User.Identity.Name, attachment);
+            }
+            else
+            {
+                var attachment = new Attachment();
+                attachment.Path = "";
+                await this.Clients.Group(meetingRoomId.ToString()).SendAsync("Receive", message, this.Context.User.Identity.Name, attachment);
+            }
         }
     }
 }

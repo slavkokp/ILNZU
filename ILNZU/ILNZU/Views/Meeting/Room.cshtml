@@ -1,4 +1,8 @@
 ﻿@using DAL.Models
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Html;
+@using System.Text.Encodings.Web;
+@using System.IO;
 @model List<Message>
 
 
@@ -14,6 +18,13 @@
                             <b>@sender</b>
                             @msg.Text
                         </p>
+                        if (msg.AttachmentId != null)
+                        {
+                            <form asp-action="Download" asp-controller="Attachment">
+                                <input type="submit" value="@ViewBag.attachments[msg.AttachmentId.Value].FileName" class="btn btn-outline-dark" />
+                                <input type="hidden" value="@ViewBag.attachments[msg.AttachmentId.Value].Path" name="filePath">
+                            </form>
+                        }
                     }
                 </div>
             </div>
@@ -21,25 +32,37 @@
     </div>
 </div>
 
-<br/>
+<br />
 
 <div class="col-md-4 offset-md-4 button-to-bot">
     <div class="message-input">
         <div id="inputForm">
             <input type="text" id="message" placeholder="Type a message" />
-            <input type="button" id="sendBtn" value="Send" />
+            <input type="button" id="sendBtn" value="SendMsg" />
+            <input type="file" id="attachment" value="upload" />
         </div>
     </div>
 </div>
 
 
-    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
-    <script>
+
+
+<script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+<script>
+    @functions
+    {
+        public static string antiForgeryTokenToString(IHtmlContent antiForgeryToken)
+        {
+            var writer = new StringWriter();
+            antiForgeryToken.WriteTo(writer, HtmlEncoder.Default);
+            return writer.ToString();
+        }
+    }
     const hubConnection = new signalR.HubConnectionBuilder()
         .withUrl("/chat")
         .build();
 
-    hubConnection.on("Receive", function (message, userName, meetingRoomId) {
+    hubConnection.on("Receive", function (message, userName, attachment) {
 
         let time = new Date(message.datetime);
 
@@ -49,16 +72,52 @@
         let elem = document.createElement("p");
         elem.appendChild(userNameElem);
         elem.appendChild(document.createTextNode(message.text));
-
         document.getElementById("chatroom").appendChild(elem);
+        if (attachment.path != "") {
+
+            elem.insertAdjacentHTML("afterend",
+                `<form asp-action="Download" asp-controller="Attachment">
+                <input type="submit" value=${attachment.filename} class="btn btn-outline-dark"/>
+                <input type="hidden" value=${attachment.path} name="filePath">
+                @Html.AntiForgeryToken()
+            </form>`);
+        }
     });
+
+    function uploadFiles(file, text) {
+        var formData = new FormData();
+        formData.append("file", file);
+        $.ajax(
+            {
+                url: '@Url.Action("CreateAttachment", "Attachment")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                type: "POST",
+                success: function (Id) {
+                    hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId, Id);
+                }
+            }
+        );
+    }
 
     document.getElementById("sendBtn").addEventListener("click", function (e) {
         let text = document.getElementById("message").value;
-        hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId);
+        let input = document.getElementById("attachment")
+        let file = input.files[0];
+        if (file != null) {
+            input.value = null
+            uploadFiles(file, text);
+        }
+        else {
+            if (text != "") {
+                hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId, null);
+            }
+        }
+
     });
 
-        hubConnection.start().then(function () {
-            hubConnection.invoke("SetGroup", @ViewBag.MeetingRoomId);
-        });
-    </script>
+    hubConnection.start().then(function () {
+        hubConnection.invoke("SetGroup", @ViewBag.MeetingRoomId);
+    });
+</script>
