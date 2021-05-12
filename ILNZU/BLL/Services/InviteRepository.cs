@@ -1,25 +1,42 @@
-﻿using DAL;
-using DAL.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BLL.Services
+﻿namespace BLL.Services
 {
-    class InviteRepository
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using DAL;
+    using DAL.Models;
+
+    /// <summary>
+    /// Invite repositoru class.
+    /// </summary>
+    public class InviteRepository
     {
+        /// <summary>
+        /// Gets users invites.
+        /// </summary>
+        /// <param name="userId">Users id.</param>
+        /// <returns>List of invites.</returns>
         public async Task<List<Invite>> GetInvites(int userId)
         {
             return await DBRepository.GetInvites(userId);
         }
 
+        /// <summary>
+        /// Adds an invite to a database.
+        /// </summary>
+        /// <param name="userId">Users id.</param>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>Nothing.</returns>
         public async Task AddInvite(int userId, int meetingId)
         {
             await DBRepository.AddInvite(userId, meetingId);
         }
 
+        /// <summary>
+        /// Removes the invite from the database.
+        /// </summary>
+        /// <param name="userId">User id.</param>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>Nothing.</returns>
         public async Task RemoveInvite(int userId, int meetingId)
         {
             await DBRepository.RemoveInvite(userId, meetingId);

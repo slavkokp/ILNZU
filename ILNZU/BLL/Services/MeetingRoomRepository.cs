@@ -16,6 +16,16 @@ namespace BLL.Services
     public class MeetingRoomRepository
     {
         /// <summary>
+        /// Gets the meeting title.
+        /// </summary>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>Meeting title.</returns>
+        public static async Task<string> GetMeetingTitle(int meetingId)
+        {
+            return await DBRepository.GetMeetingTitle(meetingId);
+        }
+
+        /// <summary>
         /// Creates a meeting room.
         /// </summary>
         /// <param name="title">Room title.</param>
@@ -98,11 +108,6 @@ namespace BLL.Services
         public async Task RemoveUserFromMeeting(int userId, int meetingRoomId)
         {
             await DBRepository.RemoveUserFromMeeting(userId, meetingRoomId);
-        }
-
-        public static async Task<string> GetMeetingTitle(int meetingId)
-        {
-            return await DBRepository.GetMeetingTitle(meetingId);
         }
     }
 }

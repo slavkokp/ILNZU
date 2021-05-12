@@ -260,7 +260,11 @@ namespace DAL
             }
         }
 
-
+        /// <summary>
+        /// Gets the meeting title.
+        /// </summary>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>Meeting room title.</returns>
         public static async Task<string> GetMeetingTitle(int meetingId)
         {
             using (var db = new ILNZU_dbContext())
@@ -270,6 +274,12 @@ namespace DAL
             }
         }
 
+        /// <summary>
+        /// Removes the invite.
+        /// </summary>
+        /// <param name="userId">User id.</param>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>Nothing.</returns>
         public static async Task RemoveInvite(int userId, int meetingId)
         {
             using (var db = new ILNZU_dbContext())
@@ -280,6 +290,12 @@ namespace DAL
             }
         }
 
+        /// <summary>
+        /// Adds an invite.
+        /// </summary>
+        /// <param name="userId">User id.</param>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>Nothing.</returns>
         public static async Task AddInvite(int userId, int meetingId)
         {
             Invite i = new Invite { UserId = userId, MeetingRoomId = meetingId, DateTime = DateTime.Now };
@@ -290,6 +306,11 @@ namespace DAL
             }
         }
 
+        /// <summary>
+        /// Gets invites.
+        /// </summary>
+        /// <param name="userId">User id.</param>
+        /// <returns>List of invites.</returns>
         public static async Task<List<Invite>> GetInvites(int userId)
         {
             using (var db = new ILNZU_dbContext())
@@ -299,7 +320,5 @@ namespace DAL
                                              select invite).ToList());
             }
         }
-
-
     }
 }
