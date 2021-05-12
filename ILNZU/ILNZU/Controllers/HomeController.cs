@@ -163,7 +163,5 @@ namespace ILNZU.Controllers
         {
             return this.View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
         }
-
-
     }
 }

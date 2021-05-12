@@ -1,6 +1,5 @@
 ﻿namespace BLL.Services
 {
-<<<<<<< HEAD
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using DAL;
@@ -9,8 +8,6 @@
     /// <summary>
     /// Invite repositoru class.
     /// </summary>
-=======
->>>>>>> 61949cc099b2d5dc496afffd4a7bd8bdcac03662
     public class InviteRepository
     {
         /// <summary>
