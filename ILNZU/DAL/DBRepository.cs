@@ -180,8 +180,11 @@ namespace DAL
             using (var db = new ILNZU_dbContext())
             {
                 var relation = await db.UserMemberOfMeetingRoom.FirstOrDefaultAsync(u => u.MeetingRoomId == meetingId && u.UserId == userId);
-                db.Remove(relation);
-                await db.SaveChangesAsync();
+                if (relation != null)
+                {
+                    db.Remove(relation);
+                    await db.SaveChangesAsync();
+                }
             }
         }
 
