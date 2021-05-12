@@ -116,6 +116,7 @@ namespace ILNZU.Controllers
         {
             User u = this.userRepository.FindUser(email).Result;
             await this.meetingRoomRepository.RemoveUserFromMeeting(u.Id, meetingId);
+            await this.inviteRepository.AddInvite(u.Id, meetingId);
             return this.RedirectToAction("Index");
         }
 
