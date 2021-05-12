@@ -54,7 +54,17 @@ namespace ILNZU
             message.MeetingRoomId = meetingRoomId;
             message.UserId = Convert.ToInt32(this.Context.UserIdentifier);
             await this.msgRep.CreateMessage(message);
-            await this.Clients.Group(meetingRoomId.ToString()).SendAsync("Receive", message, this.Context.User.Identity.Name);
+            if (attachmentId.HasValue)
+            {
+                var attachment = await this.attachRep.FindAttachment(attachmentId.Value);
+                await this.Clients.Group(meetingRoomId.ToString()).SendAsync("Receive", message, this.Context.User.Identity.Name, attachment);
+            }
+            else
+            {
+                var attachment = new Attachment();
+                attachment.Path = "";
+                await this.Clients.Group(meetingRoomId.ToString()).SendAsync("Receive", message, this.Context.User.Identity.Name, attachment);
+            }
         }
     }
 }

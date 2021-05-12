@@ -39,7 +39,6 @@ namespace ILNZU.Controllers
             return this.Ok(id);
         }
 
-        [Authorize]
         public async Task<IActionResult> Download(string filePath)
         {
             string filename = Path.GetFileName(filePath);

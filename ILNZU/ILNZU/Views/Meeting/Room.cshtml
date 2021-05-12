@@ -1,5 +1,8 @@
 ﻿@using DAL.Models
 @using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Html;
+@using System.Text.Encodings.Web;
+@using System.IO;
 @model List<Message>
 
 <div id="header"></div>
@@ -20,7 +23,7 @@
                         if (msg.AttachmentId != null)
                         {
                             <form asp-action="Download" asp-controller="Attachment">
-                                <input type="submit" value="@ViewBag.attachments[msg.AttachmentId.Value].FileName" class="btn btn-outline-dark"/>
+                                <input type="submit" value="@ViewBag.attachments[msg.AttachmentId.Value].FileName" class="btn btn-outline-dark" />
                                 <input type="hidden" value="@ViewBag.attachments[msg.AttachmentId.Value].Path" name="filePath">
                             </form>
                         }
@@ -48,11 +51,20 @@
 
 <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
 <script>
+    @functions
+    {
+        public static string antiForgeryTokenToString(IHtmlContent antiForgeryToken)
+        {
+            var writer = new StringWriter();
+            antiForgeryToken.WriteTo(writer, HtmlEncoder.Default);
+            return writer.ToString();
+        }
+    }
     const hubConnection = new signalR.HubConnectionBuilder()
         .withUrl("/chat")
         .build();
 
-    hubConnection.on("Receive", function (message, userName) {
+    hubConnection.on("Receive", function (message, userName, attachment) {
 
         let time = new Date(message.datetime);
 
@@ -62,8 +74,16 @@
         let elem = document.createElement("p");
         elem.appendChild(userNameElem);
         elem.appendChild(document.createTextNode(message.text));
-
         document.getElementById("chatroom").appendChild(elem);
+        if (attachment.path != "") {
+
+            elem.insertAdjacentHTML("afterend",
+                `<form asp-action="Download" asp-controller="Attachment">
+                <input type="submit" value=${attachment.filename} class="btn btn-outline-dark"/>
+                <input type="hidden" value=${attachment.path} name="filePath">
+                @Html.AntiForgeryToken()
+            </form>`);
+        }
     });
 
     function uploadFiles(file, text) {

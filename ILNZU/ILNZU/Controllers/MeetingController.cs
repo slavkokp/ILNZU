@@ -16,6 +16,7 @@ namespace ILNZU.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Hosting;
+
     /// <summary>
     /// MeetingController class.
     /// </summary>
@@ -66,46 +67,9 @@ namespace ILNZU.Controllers
                 ViewBag.attachments = attachments;
                 return this.View(messages);
             }
-
+            
             return this.View("Error"); // todo : change error view to page not found
         }
-
-        //[Authorize]
-        //[HttpPost]
-        //public async Task<OkObjectResult> CreateAttachment(IFormFile file)
-        //{
-        //    Attachment attachment = new Attachment();
-        //    attachment.FileName = file.FileName;
-        //    attachment.Path = Path.DirectorySeparatorChar.ToString() + Path.Combine("Files", DateTime.Now.ToString(@"hh\_mm\_ss") + file.FileName);
-        //    using (var fileStream = new FileStream(this.appEnvironment.WebRootPath + attachment.Path, FileMode.Create))
-        //    {
-        //        file.CopyTo(fileStream);
-        //    }
-
-        //    int id = await this.attachRep.AddAttachment(attachment);
-        //    this.ViewBag.AttachmentId = id;
-        //    return this.Ok(id);
-        //}
-
-        //[Authorize]
-        //public async Task<IActionResult> Download()
-        //{
-        //    //if (filename == null)
-        //    //{
-        //    //    return Content("filename not present");
-        //    //}
-        //    string filename = "07_52_00osuGif.gif";
-        //    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files", filename);
-
-        //    var memory = new MemoryStream();
-        //    using (var stream = new FileStream(path, FileMode.Open))
-        //    {
-        //        await stream.CopyToAsync(memory);
-        //    }
-
-        //    memory.Position = 0;
-        //    return this.File(memory, MimeTypes.GetMimeType(filename), filename);
-        //}
 
         // [Authorize]
         // public async Task<IActionResult> CreateRoom(RoomModel model)
