@@ -9,6 +9,7 @@ namespace ILNZU.Controllers
     using System.Security.Claims;
     using System.Threading.Tasks;
     using BLL.Services;
+    using DAL.Models;
     using ILNZU.Models;
     using ILNZU.ViewModels;
     using Microsoft.AspNetCore.Authorization;
@@ -19,7 +20,9 @@ namespace ILNZU.Controllers
     /// </summary>
     public class HomeController : Controller
     {
-        private readonly MeetingRoomRepository rep;
+        private readonly MeetingRoomRepository meetingRoomRepository;
+        private readonly InviteRepository inviteRepository;
+        private readonly UserRepository userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeController"/> class.
@@ -27,7 +30,7 @@ namespace ILNZU.Controllers
         /// <param name="rep">Meeting room repository.</param>
         public HomeController(MeetingRoomRepository rep)
         {
-            this.rep = rep;
+            this.meetingRoomRepository = rep;
         }
 
         /// <summary>
@@ -37,7 +40,7 @@ namespace ILNZU.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            this.ViewBag.MeetingRooms = await this.rep.GetMeetingRooms(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            this.ViewBag.MeetingRooms = await this.meetingRoomRepository.GetMeetingRooms(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
             return this.View("Index", this.User.Identity.Name);
         }
 
@@ -59,15 +62,11 @@ namespace ILNZU.Controllers
         [Authorize]
         public async Task<IActionResult> CreateMeeting(RoomModel model)
         {
-            var room = await this.rep.CreateRoom(model.Title, Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
-            await this.rep.AddUserToMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), room.MeetingRoomId);
-<<<<<<< HEAD
-            this.ViewBag.Meetings = this.rep.GetMeetingRooms(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value)).Result;
-            return this.View();
-=======
-            //return this.View();
+            var room = await this.meetingRoomRepository.CreateRoom(model.Title, Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            await this.meetingRoomRepository.AddUserToMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), room.MeetingRoomId);
+            this.ViewBag.Meetings = this.meetingRoomRepository.GetMeetingRooms(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value)).Result;
+
             return RedirectToAction("Index");
->>>>>>> e89f28ab93ebc249518385b817580021022ebec3
         }
 
         /// <summary>
@@ -78,17 +77,16 @@ namespace ILNZU.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteMeeting(int meetingId)
         {
-            bool isCreatorOfMeeting = await this.rep.CheckIfUserIsCreatorOfMeetingRoom(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), meetingId);
+            bool isCreatorOfMeeting = await this.meetingRoomRepository.CheckIfUserIsCreatorOfMeetingRoom(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), meetingId);
             if (isCreatorOfMeeting)
             {
-                await this.rep.DeleteRoom(meetingId);
+                await this.meetingRoomRepository.DeleteRoom(meetingId);
             }
             else
             {
-                await this.rep.RemoveUserFromMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), meetingId);
+                await this.meetingRoomRepository.RemoveUserFromMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), meetingId);
             }
 
-            //return this.View();
             return RedirectToAction("Index");
         }
 
@@ -101,8 +99,39 @@ namespace ILNZU.Controllers
         [Authorize]
         public async Task<IActionResult> Kick(int userId, int meetingId)
         {
-            await this.rep.RemoveUserFromMeeting(userId, meetingId);
+            await this.meetingRoomRepository.RemoveUserFromMeeting(userId, meetingId);
             return this.View();
+        }
+
+        [Authorize]
+        public async Task<IActionResult> CreateInvite(string email, int meetingId)
+        {
+            User u = await this.userRepository.FindUser(email);
+            await this.meetingRoomRepository.RemoveUserFromMeeting(u.Id, meetingId);
+            return this.View();
+        }
+
+        [Authorize]
+        public async Task<IActionResult> RemoveInvite(int userId, int meetingId)
+        {
+            await this.inviteRepository.RemoveInvite(userId, meetingId);
+            return this.View();
+        }
+
+
+        [Authorize]
+        public async Task<IActionResult> GetInvites(int userId)
+        {
+            this.ViewBag.Invites = await this.inviteRepository.GetInvites(userId);
+            return this.View();
+        }
+
+
+        [Authorize]
+        public async Task<IActionResult> GetMeetingTitle(int meetingId)
+        {
+            string title = await this.meetingRoomRepository.GetMeetingTitle(meetingId);
+            return this.View(title);
         }
 
         /// <summary>
@@ -114,5 +143,7 @@ namespace ILNZU.Controllers
         {
             return this.View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
         }
+
+
     }
 }

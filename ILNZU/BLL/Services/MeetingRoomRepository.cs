@@ -20,7 +20,7 @@ namespace BLL.Services
         /// </summary>
         /// <param name="meetingId">Meeting id.</param>
         /// <returns>Meeting title.</returns>
-        public static async Task<string> GetMeetingTitle(int meetingId)
+        public async Task<string> GetMeetingTitle(int meetingId)
         {
             return await DBRepository.GetMeetingTitle(meetingId);
         }
