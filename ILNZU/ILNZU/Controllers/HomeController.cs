@@ -5,8 +5,9 @@
 namespace ILNZU.Controllers
 {
     using System;
-    using System.Linq;
+    using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
     using BLL.Services;
@@ -15,7 +16,6 @@ namespace ILNZU.Controllers
     using ILNZU.ViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using System.Collections.Generic;
 
     /// <summary>
     /// Home controller.
