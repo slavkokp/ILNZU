@@ -1,4 +1,8 @@
-﻿namespace BLL.Services
+﻿// <copyright file="InviteRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace BLL.Services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
