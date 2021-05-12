@@ -134,6 +134,7 @@ namespace ILNZU.Controllers
             User u = this.userRepository.FindUser(email).Result;
             if (u != null)
             {
+                await this.inviteRepository.RemoveInvite(u.Id, meetingId);
                 await this.inviteRepository.AddInvite(u.Id, meetingId);
             }
 

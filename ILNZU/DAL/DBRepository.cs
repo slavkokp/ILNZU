@@ -299,6 +299,25 @@ namespace DAL
         }
 
         /// <summary>
+        /// Removes the invite.
+        /// </summary>
+        /// <param name="userId">User id.</param>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>Nothing.</returns>
+        public static async Task RemoveInvite(int userId, int meetingId)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                var invite = await db.Invite.FirstOrDefaultAsync(i => i.UserId == userId && i.MeetingRoomId == meetingId);
+                if (invite != null)
+                {
+                    db.Remove(invite);
+                    await db.SaveChangesAsync();
+                }
+            }
+        }
+
+        /// <summary>
         /// Adds an invite.
         /// </summary>
         /// <param name="userId">User id.</param>

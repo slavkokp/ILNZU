@@ -45,6 +45,17 @@ namespace BLL.Services
             await DBRepository.RemoveInvite(inviteId);
         }
 
+        /// <summary>
+        /// Removes the invite from the database.
+        /// </summary>
+        /// <param name="userId">User id.</param>
+        /// <param name="meetingId">Meeting id.</param>
+        /// <returns>Nothing.</returns>
+        public async Task RemoveInvite(int userId, int meetingId)
+        {
+            await DBRepository.RemoveInvite(userId, meetingId);
+        }
+
         public async Task<Invite> FindInvite(int inviteId)
         {
             return await DBRepository.FindInvite(inviteId);
