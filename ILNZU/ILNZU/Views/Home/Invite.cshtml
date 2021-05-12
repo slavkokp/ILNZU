@@ -12,6 +12,16 @@
                     <div class="p-2">
                         <p><b>@list.Item2.Item2</b> <b>Meeting name:</b> @list.Item2.Item1</p>
                     </div>
+                    
+                    <form asp-action="AcceptInvite" asp-controller="Home">
+                        <input type="hidden" name="inviteId" value=@list.Item1>
+                        <input type="submit" value="Accept" />
+                    </form>
+
+                    <form asp-action="RemoveInvite" asp-controller="Home">
+                        <input type="hidden" name="inviteId" value=@list.Item1>
+                        <input type="submit" value="Decline" />
+                    </form>
 
                 </p>
             }
