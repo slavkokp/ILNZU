@@ -140,6 +140,24 @@ namespace ILNZU.Controllers
         }
 
         /// <summary>
+        /// Accept an invite.
+        /// </summary>
+        /// <param name="inviteId">Meeing id.</param>
+        /// <returns>Web page.</returns>
+        [Authorize]
+        public async Task<IActionResult> AcceptInvite(int inviteId)
+        {
+            Invite i = this.inviteRepository.FindInvite(inviteId).Result;
+            if (i != null)
+            {
+                await this.meetingRoomRepository.AddUserToMeeting(i.UserId, i.MeetingRoomId);
+                await this.inviteRepository.RemoveInvite(i.UserId, i.MeetingRoomId);
+            }
+
+            return this.RedirectToAction("Index");
+        }
+
+        /// <summary>
         /// Removes invite.
         /// </summary>
         /// <param name="userId">User id.</param>

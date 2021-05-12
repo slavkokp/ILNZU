@@ -329,5 +329,13 @@ namespace DAL
                                              select invite).ToList());
             }
         }
+
+        public static async Task<Invite> FindInvite(int inviteId)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                return await db.Invite.FirstOrDefaultAsync(i => i.InviteId == inviteId);
+            }
+        }
     }
 }
