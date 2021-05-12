@@ -153,7 +153,7 @@ namespace ILNZU.Controllers
             if (i != null)
             {
                 await this.meetingRoomRepository.AddUserToMeeting(i.UserId, i.MeetingRoomId);
-                await this.inviteRepository.RemoveInvite(i.UserId, i.MeetingRoomId);
+                await this.inviteRepository.RemoveInvite(inviteId);
             }
 
             return this.RedirectToAction("Index");
@@ -162,13 +162,12 @@ namespace ILNZU.Controllers
         /// <summary>
         /// Removes invite.
         /// </summary>
-        /// <param name="userId">User id.</param>
-        /// <param name="meetingId">Meeting id.</param>
+        /// <param name="inviteId">Invite id.</param>
         /// <returns>Web page.</returns>
         [Authorize]
-        public async Task<IActionResult> RemoveInvite(int userId, int meetingId)
+        public async Task<IActionResult> RemoveInvite(int inviteId)
         {
-            await this.inviteRepository.RemoveInvite(userId, meetingId);
+            await this.inviteRepository.RemoveInvite(inviteId);
             return this.View();
         }
 
