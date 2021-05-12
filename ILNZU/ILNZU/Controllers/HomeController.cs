@@ -5,6 +5,7 @@
 namespace ILNZU.Controllers
 {
     using System;
+    using System.Linq;
     using System.Diagnostics;
     using System.Security.Claims;
     using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace ILNZU.Controllers
     using ILNZU.ViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Home controller.
@@ -45,13 +47,18 @@ namespace ILNZU.Controllers
         public async Task<IActionResult> Index()
         {
             this.ViewBag.MeetingRooms = await this.meetingRoomRepository.GetMeetingRooms(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
-            this.ViewBag.Invites = await this.inviteRepository.GetInvites(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
             return this.View("Index", this.User.Identity.Name);
         }
 
+        /// <summary>
+        /// return viewbag of invites.
+        /// </summary>
+        /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         public async Task<IActionResult> Invite()
         {
-            this.ViewBag.Invites = await this.inviteRepository.GetInvites(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            var invites = await this.inviteRepository.GetInvites(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            this.ViewBag.Invites = from invite in invites
+                                    select new KeyValuePair<string, DateTime>(invite.MeetingRoom.Title, invite.DateTime);
             return this.View("Invite", this.User.Identity.Name);
         }
 
