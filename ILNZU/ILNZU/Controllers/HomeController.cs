@@ -49,6 +49,12 @@ namespace ILNZU.Controllers
             return this.View("Index", this.User.Identity.Name);
         }
 
+        public async Task<IActionResult> Invite()
+        {
+            this.ViewBag.Invites = await this.inviteRepository.GetInvites(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            return this.View("Invite", this.User.Identity.Name);
+        }
+
         /// <summary>
         /// Shows a view.
         /// </summary>
