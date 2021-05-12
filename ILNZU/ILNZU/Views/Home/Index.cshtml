@@ -28,8 +28,9 @@
                     <a href=@("https://localhost:44391/meeting/room/" + tuple.Item1.ToString())>@tuple.Item2</a>
                 </div>
 
-                <form >
-                    <input type="text" placeholder="User email" />
+                <form asp-action="CreateInvite" asp-controller="Home">
+                    <input type="text" name="email" placeholder="User email" />
+                    <input type="hidden" name="meetingId" value=@tuple.Item1.ToString()>
                     <input type="submit" value="Invite" />
                 </form>
 
