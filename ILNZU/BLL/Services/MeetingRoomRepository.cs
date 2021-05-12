@@ -99,5 +99,10 @@ namespace BLL.Services
         {
             await DBRepository.RemoveUserFromMeeting(userId, meetingRoomId);
         }
+
+        public static async Task<string> GetMeetingTitle(int meetingId)
+        {
+            return await DBRepository.GetMeetingTitle(meetingId);
+        }
     }
 }

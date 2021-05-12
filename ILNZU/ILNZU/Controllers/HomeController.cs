@@ -61,6 +61,7 @@ namespace ILNZU.Controllers
         {
             var room = await this.rep.CreateRoom(model.Title, Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
             await this.rep.AddUserToMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), room.MeetingRoomId);
+            this.ViewBag.Meetings = this.rep.GetMeetingRooms(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value)).Result;
             return this.View();
         }
 

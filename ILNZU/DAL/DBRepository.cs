@@ -259,5 +259,47 @@ namespace DAL
                                              select new Tuple<int, string>(meetings.MeetingRoomId, meetings.Title)).ToList());
             }
         }
+
+
+        public static async Task<string> GetMeetingTitle(int meetingId)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                MeetingRoom room = await db.MeetingRoom.FirstOrDefaultAsync(m => m.MeetingRoomId == meetingId);
+                return room.Title;
+            }
+        }
+
+        public static async Task RemoveInvite(int userId, int meetingId)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                var invite = await db.Invite.FirstOrDefaultAsync(i => i.MeetingRoomId == meetingId && i.UserId == userId);
+                db.Remove(invite);
+                await db.SaveChangesAsync();
+            }
+        }
+
+        public static async Task AddInvite(int userId, int meetingId)
+        {
+            Invite i = new Invite { UserId = userId, MeetingRoomId = meetingId, DateTime = DateTime.Now };
+            using (var db = new ILNZU_dbContext())
+            {
+                db.Add(i);
+                await db.SaveChangesAsync();
+            }
+        }
+
+        public static async Task<List<Invite>> GetInvites(int userId)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                return await Task.Run(() => (from invite in db.Invite
+                                             where invite.UserId == userId
+                                             select invite).ToList());
+            }
+        }
+
+
     }
 }
