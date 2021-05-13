@@ -23,10 +23,7 @@ namespace ILNZU.Controllers
             this.attachRep = attachRep;
         }
 
-        // attachment.FileName == fileName ?
-        // attachment.Path[0-5] == "Files" ?
-        // attachment.Path end == fileName ?
-        public Attachment CreateAttachment(string fileName)
+        public static Attachment CreateAttachment(string fileName)
         {
             Attachment attachment = new Attachment();
             attachment.FileName = fileName;
