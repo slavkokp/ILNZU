@@ -54,6 +54,7 @@ namespace ILNZU.Controllers
         /// return viewbag of invites.
         /// </summary>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
+        [Authorize]
         public async Task<IActionResult> Invite()
         {
             var invites = await this.inviteRepository.GetInvites(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
@@ -168,7 +169,7 @@ namespace ILNZU.Controllers
         public async Task<IActionResult> RemoveInvite(int inviteId)
         {
             await this.inviteRepository.RemoveInvite(inviteId);
-            return this.View();
+            return this.RedirectToAction("Index");
         }
 
         /// <summary>

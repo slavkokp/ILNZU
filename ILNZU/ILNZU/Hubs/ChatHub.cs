@@ -6,14 +6,14 @@ namespace ILNZU
 {
     using System;
     using System.IO;
+    using System.Security.Claims;
     using System.Threading.Tasks;
     using BLL.Services;
     using DAL.Models;
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.SignalR;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
-    using System.Security.Claims;
+    using Microsoft.AspNetCore.SignalR;
 
     /// <summary>
     /// ChatHub class.
@@ -51,6 +51,7 @@ namespace ILNZU
         /// </summary>
         /// <param name="message">User message.</param>
         /// <param name="meetingRoomId">Meeting room id.</param>
+        /// <param name="attachmentId">Attachment id.</param>
         /// <returns>A task.</returns>
         public async Task Send(Message message, int meetingRoomId, int? attachmentId)
         {
@@ -67,7 +68,7 @@ namespace ILNZU
             else
             {
                 var attachment = new Attachment();
-                attachment.Path = "";
+                attachment.Path = string.Empty;
                 await this.Clients.Group(meetingRoomId.ToString()).SendAsync("Receive", message, this.Context.User.Identity.Name, attachment);
             }
         }
