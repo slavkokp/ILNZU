@@ -6,9 +6,9 @@ namespace TEEEEEsts
 {
     using DAL;
     using Xunit;
-    using ILNZU.Controllers;
     using DAL.Models;
     using System.IO;
+    using BLL.Services;
 
     /// <summary>
     /// Class with Unit tests.
@@ -42,7 +42,7 @@ namespace TEEEEEsts
         public void CreateAttachmentTest1()
         {
             string fileName = "lolipop.cs";
-            Attachment attachment = AttachmentController.CreateAttachment(fileName);
+            Attachment attachment = PathService.CreateAttachment(fileName);
             Assert.Equal(fileName, attachment.FileName);
         }
 
@@ -50,15 +50,15 @@ namespace TEEEEEsts
         public void CreateAttachmentTest2()
         {
             string fileName = "lolipop.cs";
-            Attachment attachment = AttachmentController.CreateAttachment(fileName);
-            Assert.Equal(fileName, attachment.Path.Substring(0, 5));
+            Attachment attachment = PathService.CreateAttachment(fileName);
+            Assert.Equal("Files", attachment.Path.Substring(0, 5));
         }
 
         [Fact]
         public void CreateAttachmentTest3()
         {
             string fileName = "lolipop.cs";
-            Attachment attachment = AttachmentController.CreateAttachment(fileName);
+            Attachment attachment = PathService.CreateAttachment(fileName);
             Assert.Equal(fileName, Path.GetFileName(attachment.Path).Substring(8, fileName.Length));
         }
     }

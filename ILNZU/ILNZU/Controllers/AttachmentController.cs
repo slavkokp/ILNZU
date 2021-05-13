@@ -23,19 +23,11 @@ namespace ILNZU.Controllers
             this.attachRep = attachRep;
         }
 
-        public static Attachment CreateAttachment(string fileName)
-        {
-            Attachment attachment = new Attachment();
-            attachment.FileName = fileName;
-            attachment.Path = Path.Combine("Files", DateTime.Now.ToString(@"hh\_mm\_ss") + fileName);
-            return attachment;
-        }
-
         [Authorize]
         [HttpPost]
         public async Task<OkObjectResult> CreateAttachment(IFormFile file)
         {
-            Attachment attachment = CreateAttachment(file.FileName);
+            Attachment attachment = PathService.CreateAttachment(file.FileName);
             using (var fileStream = new FileStream(Path.Combine(this.appEnvironment.WebRootPath, attachment.Path), FileMode.Create))
             {
                 file.CopyTo(fileStream);

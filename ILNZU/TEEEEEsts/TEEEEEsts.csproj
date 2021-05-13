@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BLL\BLL.csproj" />
-    <ProjectReference Include="..\ILNZU\ILNZU.csproj" />
   </ItemGroup>
 
 </Project>
