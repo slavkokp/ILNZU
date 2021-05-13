@@ -6,10 +6,26 @@
 @model List<Message>
 
 
+
+
+
 <div class="container">
     <div class="row">
-        <div class="col-md-4 offset-md-4">
-            <div class="scroll-chat">
+        <div class="chat-frame">
+            <div class="col-md-1">
+                <h2>Chats</h2>
+                @foreach (var tuple in ViewBag.MeetingRooms)
+                {
+                    <p>
+                        <div class="p-2">
+                            <a href=@("https://localhost:44391/meeting/room/" + tuple.Item1.ToString())>@tuple.Item2</a>
+                        </div>
+                    </p>
+                }
+            </div>
+        </div>
+        <div class="col">
+            <div class="scroll-chat" id="sc">
                 <div id="chatroom">
                     @foreach (var msg in Model)
                     {
@@ -30,19 +46,22 @@
             </div>
         </div>
     </div>
-</div>
 
-<br />
-
-<div class="col-md-4 offset-md-4 button-to-bot">
-    <div class="message-input">
-        <div id="inputForm">
-            <input type="text" id="message" placeholder="Type a message" />
-            <input type="button" id="sendBtn" value="SendMsg" />
-            <input type="file" id="attachment" value="upload" />
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <div class="message-input">
+                <div id="inputForm">
+                    <input type="text" id="message" placeholder="Type a message" />
+                    <input type="button" id="sendBtn" value="SendMsg" />
+                    <br />
+                    <input type="file" id="attachment" value="upload" />
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+
 
 
 
@@ -114,6 +133,9 @@
                 hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId, null);
             }
         }
+
+        document.getElementById("message").value = '';
+        $('#sc').scrollTop($('#sc')[0].scrollHeight);
 
     });
 
