@@ -9,7 +9,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4 offset-md-4">
-            <div class="scroll-chat">
+            <div class="scroll-chat" id="sc">
                 <div id="chatroom">
                     @foreach (var msg in Model)
                     {
@@ -30,16 +30,17 @@
             </div>
         </div>
     </div>
-</div>
 
-<br />
-
-<div class="col-md-4 offset-md-4 button-to-bot">
-    <div class="message-input">
-        <div id="inputForm">
-            <input type="text" id="message" placeholder="Type a message" />
-            <input type="button" id="sendBtn" value="SendMsg"/>
-            <input type="file" id="attachment" value="upload" />
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <div class="message-input">
+                <div id="inputForm">
+                    <input type="text" id="message" placeholder="Type a message" />
+                    <input type="button" id="sendBtn" value="SendMsg" />
+                    <br />
+                    <input type="file" id="attachment" value="upload" />
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -47,8 +48,10 @@
 
 
 
-<script src="~/js/signalr/dist/browser/signalr.min.js"></script>
-<script>
+
+
+    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script>
     @functions
     {
         public static string antiForgeryTokenToString(IHtmlContent antiForgeryToken)
@@ -116,10 +119,11 @@
         }
 
         document.getElementById("message").value = '';
+        $('#sc').scrollTop($('#sc')[0].scrollHeight);
 
     });
 
     hubConnection.start().then(function () {
         hubConnection.invoke("SetGroup", @ViewBag.MeetingRoomId);
     });
-</script>
+    </script>
