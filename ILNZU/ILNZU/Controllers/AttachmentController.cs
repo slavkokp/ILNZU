@@ -23,13 +23,22 @@ namespace ILNZU.Controllers
             this.attachRep = attachRep;
         }
 
+        // attachment.FileName == fileName ?
+        // attachment.Path[0-5] == "Files" ?
+        // attachment.Path end == fileName ?
+        public Attachment CreateAttachment(string fileName)
+        {
+            Attachment attachment = new Attachment();
+            attachment.FileName = fileName;
+            attachment.Path = Path.Combine("Files", DateTime.Now.ToString(@"hh\_mm\_ss") + fileName);
+            return attachment;
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<OkObjectResult> CreateAttachment(IFormFile file)
         {
-            Attachment attachment = new Attachment();
-            attachment.FileName = file.FileName;
-            attachment.Path = Path.Combine("Files", DateTime.Now.ToString(@"hh\_mm\_ss") + file.FileName);
+            Attachment attachment = CreateAttachment(file.FileName);
             using (var fileStream = new FileStream(Path.Combine(this.appEnvironment.WebRootPath, attachment.Path), FileMode.Create))
             {
                 file.CopyTo(fileStream);
