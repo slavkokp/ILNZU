@@ -83,8 +83,11 @@ namespace ILNZU.Controllers
         [Authorize]
         public async Task<IActionResult> CreateMeeting(RoomModel model)
         {
-            var room = await this.meetingRoomRepository.CreateRoom(model.Title, Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
-            await this.meetingRoomRepository.AddUserToMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), room.MeetingRoomId);
+            if (model.Title != null)
+            {
+                var room = await this.meetingRoomRepository.CreateRoom(model.Title, Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
+                await this.meetingRoomRepository.AddUserToMeeting(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value), room.MeetingRoomId);
+            }
 
             return this.RedirectToAction("Index");
         }

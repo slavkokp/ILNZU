@@ -97,6 +97,7 @@
                 @Html.AntiForgeryToken()
             </form>`);
         }
+        $('#sc').scrollTop($('#sc')[0].scrollHeight);
     });
 
     function uploadFiles(file, text) {
@@ -131,7 +132,6 @@
         }
 
         document.getElementById("message").value = '';
-        $('#sc').scrollTop($('#sc')[0].scrollHeight);
 
     });
 

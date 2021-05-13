@@ -14,7 +14,6 @@ namespace ILNZU.ViewModels
         /// <summary>
         /// Gets or sets title.
         /// </summary>
-        [Required(ErrorMessage = "Title not set")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
     }
 }
