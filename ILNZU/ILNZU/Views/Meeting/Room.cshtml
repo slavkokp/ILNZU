@@ -38,7 +38,7 @@
     <div class="message-input">
         <div id="inputForm">
             <input type="text" id="message" placeholder="Type a message" />
-            <input type="button" id="sendBtn" value="SendMsg" />
+            <input type="button" id="sendBtn" value="SendMsg"/>
             <input type="file" id="attachment" value="upload" />
         </div>
     </div>
@@ -114,6 +114,8 @@
                 hubConnection.invoke("Send", { "text": text }, @ViewBag.MeetingRoomId, null);
             }
         }
+
+        document.getElementById("message").value = '';
 
     });
 

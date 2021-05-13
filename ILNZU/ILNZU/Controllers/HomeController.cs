@@ -156,7 +156,7 @@ namespace ILNZU.Controllers
                 await this.inviteRepository.RemoveInvite(inviteId);
             }
 
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction("Invite");
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace ILNZU.Controllers
         public async Task<IActionResult> RemoveInvite(int inviteId)
         {
             await this.inviteRepository.RemoveInvite(inviteId);
-            return this.View();
+            return this.RedirectToAction("Invite");
         }
 
         /// <summary>
