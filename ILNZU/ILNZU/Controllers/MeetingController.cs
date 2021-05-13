@@ -23,6 +23,7 @@ namespace ILNZU.Controllers
     public class MeetingController : Controller
     {
         private readonly UserRepository userRep;
+        private readonly MeetingRoomRepository meetingRoomRepository;
         private readonly MessageRepository messageRep;
         private readonly AttachmentRepository attachRep;
         private readonly IWebHostEnvironment appEnvironment;
@@ -32,10 +33,11 @@ namespace ILNZU.Controllers
         /// </summary>
         /// <param name="userRep">UserRepository service.</param>
         /// <param name="messageRep">MessageRepository service.</param>
-        public MeetingController(UserRepository userRep, MessageRepository messageRep, AttachmentRepository attachRep, IWebHostEnvironment appEnvironment)
+        public MeetingController(UserRepository userRep, MessageRepository messageRep, MeetingRoomRepository meetingRep, AttachmentRepository attachRep, IWebHostEnvironment appEnvironment)
         {
             this.userRep = userRep;
             this.messageRep = messageRep;
+            this.meetingRoomRepository = meetingRep;
             this.appEnvironment = appEnvironment;
             this.attachRep = attachRep;
         }
@@ -65,6 +67,7 @@ namespace ILNZU.Controllers
                 }
 
                 ViewBag.attachments = attachments;
+                this.ViewBag.MeetingRooms = await this.meetingRoomRepository.GetMeetingRooms(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
                 return this.View(messages);
             }
             

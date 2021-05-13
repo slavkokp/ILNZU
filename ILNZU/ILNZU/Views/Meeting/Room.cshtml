@@ -6,9 +6,25 @@
 @model List<Message>
 
 
+
+
+
 <div class="container">
     <div class="row">
-        <div class="col-md-4 offset-md-4">
+        <div class="chat-frame">
+            <div class="col-md-1">
+                <h2>Chats</h2>
+                @foreach (var tuple in ViewBag.MeetingRooms)
+                {
+                    <p>
+                        <div class="p-2">
+                            <a href=@("https://localhost:44391/meeting/room/" + tuple.Item1.ToString())>@tuple.Item2</a>
+                        </div>
+                    </p>
+                }
+            </div>
+        </div>
+        <div class="col">
             <div class="scroll-chat" id="sc">
                 <div id="chatroom">
                     @foreach (var msg in Model)
@@ -50,8 +66,8 @@
 
 
 
-    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
-    <script>
+<script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+<script>
     @functions
     {
         public static string antiForgeryTokenToString(IHtmlContent antiForgeryToken)
@@ -126,4 +142,4 @@
     hubConnection.start().then(function () {
         hubConnection.invoke("SetGroup", @ViewBag.MeetingRoomId);
     });
-    </script>
+</script>
