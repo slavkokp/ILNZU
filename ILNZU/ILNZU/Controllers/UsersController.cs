@@ -201,6 +201,11 @@
             return this.RedirectToAction(nameof(this.Index));
         }
 
+        /// <summary>
+        /// Checks if user exists.
+        /// </summary>
+        /// <param name="id">User id.</param>
+        /// <returns>If user exists.</returns>
         private bool UserExists(int id)
         {
             return this.context.User.Any(e => e.Id == id);
