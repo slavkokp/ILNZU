@@ -126,6 +126,13 @@ namespace ILNZU.Controllers
             return this.RedirectToAction("Login", "Account");
         }
 
+        /// <summary>
+        /// Authenticates user.
+        /// </summary>
+        /// <param name="email">Email.</param>
+        /// <param name="userId">User id.</param>
+        /// <param name="name">Name.</param>
+        /// <returns>Nothing.</returns>
         private async Task Authenticate(string email, int userId, string name)
         {
             var claims = new List<Claim>
