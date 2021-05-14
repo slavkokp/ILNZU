@@ -1,28 +1,42 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using BLL.Services;
-using DAL.Models;
+﻿// <copyright file="AttachmentController.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace ILNZU.Controllers
 {
+    using System.IO;
+    using System.Threading.Tasks;
+    using BLL.Services;
+    using DAL.Models;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+
+    /// <summary>
+    /// Attachment controller.
+    /// </summary>
     public class AttachmentController : Controller
     {
         private readonly AttachmentRepository attachRep;
         private readonly IWebHostEnvironment appEnvironment;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AttachmentController"/> class.
+        /// </summary>
+        /// <param name="attachRep">Attachment repository.</param>
+        /// <param name="appEnvironment">IWebHostInvironment.</param>
         public AttachmentController(AttachmentRepository attachRep, IWebHostEnvironment appEnvironment)
         {
             this.appEnvironment = appEnvironment;
             this.attachRep = attachRep;
         }
 
+        /// <summary>
+        /// Creates an attachment.
+        /// </summary>
+        /// <param name="file">File name.</param>
+        /// <returns>Result.</returns>
         [Authorize]
         [HttpPost]
         public async Task<OkObjectResult> CreateAttachment(IFormFile file)
@@ -37,6 +51,11 @@ namespace ILNZU.Controllers
             return this.Ok(id);
         }
 
+        /// <summary>
+        /// Downloads an attachment.
+        /// </summary>
+        /// <param name="filePath">File path.</param>
+        /// <returns>Result.</returns>
         public async Task<IActionResult> Download(string filePath)
         {
             string filename = Path.GetFileName(filePath);

@@ -1,15 +1,23 @@
-﻿using DAL.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="PathService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace BLL.Services
 {
+    using System;
+    using System.IO;
+    using DAL.Models;
+
+    /// <summary>
+    /// Path service class.
+    /// </summary>
     public class PathService
     {
+        /// <summary>
+        /// Creates an attachment.
+        /// </summary>
+        /// <param name="fileName">File name.</param>
+        /// <returns>Attachment.</returns>
         public static Attachment CreateAttachment(string fileName)
         {
             Attachment attachment = new Attachment();

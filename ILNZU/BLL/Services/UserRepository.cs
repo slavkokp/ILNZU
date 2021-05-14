@@ -8,6 +8,9 @@ namespace BLL.Services
     using DAL;
     using DAL.Models;
 
+    /// <summary>
+    /// User repository class.
+    /// </summary>
     public class UserRepository
     {
         /// <summary>

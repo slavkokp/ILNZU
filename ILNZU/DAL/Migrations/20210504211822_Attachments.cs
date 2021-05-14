@@ -1,10 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+﻿// <copyright file="20210504211822_Attachments.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace DAL.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
+    using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+    /// <summary>
+    /// Class for migrations.
+    /// </summary>
     public partial class Attachments : Migration
     {
+        /// <inheritdoc/>
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
@@ -21,7 +29,7 @@ namespace DAL.Migrations
                     AttachmentId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Path = table.Column<string>(type: "text", nullable: true),
-                    FileName = table.Column<int>(type: "integer", nullable: false)
+                    FileName = table.Column<int>(type: "integer", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -42,6 +50,7 @@ namespace DAL.Migrations
                 onDelete: ReferentialAction.Cascade);
         }
 
+        /// <inheritdoc/>
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(

@@ -44,6 +44,9 @@ namespace DAL.Data
         /// </summary>
         public DbSet<UserMemberOfMeetingRoom> UserMemberOfMeetingRoom { get; set; }
 
+        /// <summary>
+        /// Gets or sets an attachment.
+        /// </summary>
         public DbSet<Attachment> Attachment { get; set; }
 
         /// <inheritdoc/>

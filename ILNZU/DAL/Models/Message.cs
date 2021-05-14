@@ -51,8 +51,14 @@ namespace DAL.Models
         /// </summary>
         public MeetingRoom MeetingRoom { get; set; }
 
+        /// <summary>
+        /// Gets or sets attachment id.
+        /// </summary>
         public int? AttachmentId { get; set; }
 
+        /// <summary>
+        /// Gets or sets attachment.
+        /// </summary>
         public virtual Attachment Attachment { get; set; }
     }
 }

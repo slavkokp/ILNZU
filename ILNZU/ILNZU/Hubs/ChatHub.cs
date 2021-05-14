@@ -5,14 +5,11 @@
 namespace ILNZU
 {
     using System;
-    using System.IO;
-    using System.Security.Claims;
     using System.Threading.Tasks;
     using BLL.Services;
     using DAL.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.SignalR;
 
     /// <summary>
@@ -28,7 +25,9 @@ namespace ILNZU
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatHub"/> class.
         /// </summary>
-        /// <param name="dbRepository">database repository.</param>
+        /// <param name="msgRep">Message repository.</param>
+        /// <param name="attachRep">Attachment repository.</param>
+        /// <param name="appEnvironment">App environment.</param>
         public ChatHub(MessageRepository msgRep, AttachmentRepository attachRep, IWebHostEnvironment appEnvironment)
         {
             this.msgRep = msgRep;

@@ -348,6 +348,11 @@ namespace DAL
             }
         }
 
+        /// <summary>
+        /// Findes invite.
+        /// </summary>
+        /// <param name="inviteId">Invite id.</param>
+        /// <returns>An invite.</returns>
         public static async Task<Invite> FindInvite(int inviteId)
         {
             using (var db = new ILNZU_dbContext())
@@ -356,6 +361,11 @@ namespace DAL
             }
         }
 
+        /// <summary>
+        /// Adds an attachment.
+        /// </summary>
+        /// <param name="attachment">Attachment.</param>
+        /// <returns>Attachment id.</returns>
         public static async Task<int> AddAttachment(Attachment attachment)
         {
             using (var db = new ILNZU_dbContext())
@@ -366,6 +376,11 @@ namespace DAL
             }
         }
 
+        /// <summary>
+        /// Finds an attachment.
+        /// </summary>
+        /// <param name="attachmentId">Attachment id.</param>
+        /// <returns>Attachment.</returns>
         public static async Task<Attachment> FindAttachment(int attachmentId)
         {
             using (var db = new ILNZU_dbContext())

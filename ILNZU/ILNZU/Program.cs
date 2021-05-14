@@ -24,11 +24,7 @@ namespace ILNZU
                 .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Information)
                 .Enrich.FromLogContext()
                 .WriteTo.Seq("http://localhost:5341/")
-                .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
-
-                // .WriteTo.Console(new Serilog.Formatting.Compact.RenderedCompactJsonFormatter())
-                // .WriteTo.File(new Serilog.Formatting.Compact.RenderedCompactJsonFormatter(), "/logs/log.ndjson")
-                .CreateLogger();
+                .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day).CreateLogger();
             try
             {
                 Log.Information("Starting up");

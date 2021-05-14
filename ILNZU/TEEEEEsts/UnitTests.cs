@@ -4,11 +4,11 @@
 
 namespace TEEEEEsts
 {
-    using DAL;
-    using Xunit;
-    using DAL.Models;
     using System.IO;
     using BLL.Services;
+    using DAL;
+    using DAL.Models;
+    using Xunit;
 
     /// <summary>
     /// Class with Unit tests.
@@ -38,6 +38,9 @@ namespace TEEEEEsts
             Assert.Equal("de21c670ae7c3f6f3f1f37029303c9", hash);
         }
 
+        /// <summary>
+        /// Function for create attachment testing.
+        /// </summary>
         [Fact]
         public void CreateAttachmentTest1()
         {
@@ -46,6 +49,9 @@ namespace TEEEEEsts
             Assert.Equal(fileName, attachment.FileName);
         }
 
+        /// <summary>
+        /// Function for create attachment testing.
+        /// </summary>
         [Fact]
         public void CreateAttachmentTest2()
         {
@@ -54,6 +60,9 @@ namespace TEEEEEsts
             Assert.Equal("Files", attachment.Path.Substring(0, 5));
         }
 
+        /// <summary>
+        /// Function for create attachment testing.
+        /// </summary>
         [Fact]
         public void CreateAttachmentTest3()
         {

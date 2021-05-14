@@ -5,7 +5,6 @@
 namespace ILNZU.Controllers
 {
     using System;
-    using System.IO;
     using System.Collections.Generic;
     using System.Linq;
     using System.Security.Claims;
@@ -13,9 +12,8 @@ namespace ILNZU.Controllers
     using BLL.Services;
     using DAL.Models;
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
     /// MeetingController class.
@@ -66,18 +64,12 @@ namespace ILNZU.Controllers
                     }
                 }
 
-                ViewBag.attachments = attachments;
+                this.ViewBag.attachments = attachments;
                 this.ViewBag.MeetingRooms = await this.meetingRoomRepository.GetMeetingRooms(Convert.ToInt32(this.User.FindFirst(ClaimTypes.NameIdentifier).Value));
                 return this.View(messages);
             }
-            
+
             return this.View("Error"); // todo : change error view to page not found
         }
-
-        // [Authorize]
-        // public async Task<IActionResult> CreateRoom(RoomModel model)
-        // {
-        //    DBManager.createRoom(model.Title, );
-        // }
     }
 }
