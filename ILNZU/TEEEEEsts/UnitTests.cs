@@ -9,6 +9,7 @@ namespace TEEEEEsts
     using DAL;
     using DAL.Models;
     using Xunit;
+    //using ILNZU.Controllers;
 
     /// <summary>
     /// Class with Unit tests.
@@ -70,5 +71,22 @@ namespace TEEEEEsts
             Attachment attachment = PathService.CreateAttachment(fileName);
             Assert.Equal(fileName, Path.GetFileName(attachment.Path).Substring(8, fileName.Length));
         }
+
+        //[Fact]
+        //public void Test()
+        //{
+        //    //Act
+        //    var controller = new HomeController(new MeetingRoomRepository(), new InviteRepository(), new UserRepository())
+        //    {
+        //        ControllerContext = new ControllerContext();
+        //    };
+
+        //    var user = new ClaimsPrincipal(new ClaimsIdentity(Array.Empty<Claim>()));
+        //    controller.ControllerContext.HttpContext = new DefaultHttpContext() { User = user };
+        //    var result = controller.Index().Result;
+
+        //    //Assert
+        //    Assert.NotNull(result);
+        //}
     }
 }

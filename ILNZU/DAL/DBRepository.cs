@@ -388,5 +388,18 @@ namespace DAL
                 return await db.Attachment.FirstOrDefaultAsync(a => a.AttachmentId == attachmentId);
             }
         }
+
+        public static async Task EditUser(int id, string name, string surname, string username)
+        {
+            using (var db = new ILNZU_dbContext())
+            {
+                User u = await db.User.FirstOrDefaultAsync(u => u.Id == id);
+                u.Username = username;
+                u.Name = name;
+                u.Surname = surname;
+                db.User.Update(u);
+                await db.SaveChangesAsync();
+            }
+        }
     }
 }
